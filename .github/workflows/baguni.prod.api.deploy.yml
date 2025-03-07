@@ -5,9 +5,9 @@ on:
     branches:
       - 'release' # 배포 대상 브랜치
     paths:
-      - 'backend/baguni-common/**'
-      - 'backend/baguni-infra/**'
-      - 'backend/baguni-api/**'
+      - 'baguni-common/**'
+      - 'baguni-infra/**'
+      - 'baguni-api/**'
   workflow_dispatch:
 
 jobs:
@@ -27,7 +27,7 @@ jobs:
 
       # Gradle 실행 권한 부여
       - name: Grant execute permission to gradlew
-        run: chmod +x ./backend/gradlew
+        run: chmod +x ./gradlew
 
       # JDK 설치
       - name: Set up JDK 17
@@ -39,8 +39,8 @@ jobs:
       # Spring boot application, Docker image 빌드
       - name: Build and Deploy ${{ env.module-name }} Module
         run: |
-          ./backend/gradlew -p backend/${{ env.module-name }} clean build -x test
-          docker build -t ${{ env.docker-hub-username }}/${{ env.docker-hub-repo }}:${{ env.module-name }} backend/${{ env.module-name }}
+          ./gradlew -p ${{ env.module-name }} clean build -x test
+          docker build -t ${{ env.docker-hub-username }}/${{ env.docker-hub-repo }}:${{ env.module-name }} ${{ env.module-name }}
 
       - # Docker hub 로그인
         name: Login to Docker Hub
