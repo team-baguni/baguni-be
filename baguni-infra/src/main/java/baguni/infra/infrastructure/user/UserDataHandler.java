@@ -72,6 +72,9 @@ public class UserDataHandler {
 
 	@Transactional
 	public User createTestUser(NamePassword namePassword) {
+		if (userRepository.existsByNickname(namePassword.name())) {
+			throw new ServiceException(UserErrorCode.USER_NICKNAME_DUPLICATE);
+		}
 		return userRepository.save(
 			User.TestUser(namePassword.name(), namePassword.password(), namePassword.name() + "@baguni.com")
 		);
