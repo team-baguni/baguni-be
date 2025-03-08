@@ -11,7 +11,11 @@ import org.springframework.web.bind.annotation.RestController;
 import baguni.api.application.user.controller.dto.UserApiMapper;
 import baguni.api.application.user.controller.dto.UserInfoApiResponse;
 import baguni.api.service.user.service.UserService;
+import baguni.security.config.JwtProperties;
+import baguni.security.config.SecurityProperties;
+import baguni.security.util.AccessToken;
 import baguni.security.util.CookieUtil;
+import baguni.common.dto.NamePassword;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -38,9 +42,11 @@ public class DevelopmentController {
 	private final CookieUtil cookieUtil;
 	private final UserService userService;
 	private final UserApiMapper userApiMapper;
+	private final SecurityProperties securityProps;
+	private final JwtProperties jwtProps;
 
 	@PostMapping("/users")
-	@Operation(summary = "테스트 회원 가입", description = "테스트용 회원을 생성합니다.")
+	@Operation(summary = "테스트 회원 가입 (bearer token)", description = "테스트용 회원을 생성합니다.")
 	@ApiResponses(value = {
 		@ApiResponse(responseCode = "204", description = "테스트 계정 생성 성공")
 	})
@@ -48,6 +54,39 @@ public class DevelopmentController {
 		var userInfo = userService.createTestUser();
 		var response = userApiMapper.toApiResponse(userInfo);
 		return ResponseEntity.ok(response);
+	}
+
+	// TODO: url은 추후 변경
+	@PostMapping("/users/new/signup")
+	@Operation(summary = "테스트 회원 가입 (name + password)", description = "테스트용 회원을 생성합니다.")
+	@ApiResponses(value = {
+		@ApiResponse(responseCode = "204", description = "테스트 계정 생성 성공")
+	})
+	public ResponseEntity<UserInfoApiResponse> createTestUserIdPassword(
+		@Valid @RequestBody NamePassword namePassword
+	) {
+		var userInfo = userService.createTestUser(namePassword);
+		var response = userApiMapper.toApiResponse(userInfo);
+		return ResponseEntity.ok(response);
+	}
+
+	// TODO: url은 추후 변경
+	@PostMapping("/users/new/login")
+	@Operation(summary = "테스트 회원 로그인 (name + password)", description = "테스트용 회원 로그인")
+	@ApiResponses(value = {
+		@ApiResponse(responseCode = "204", description = "테스트 계정 생성 성공")
+	})
+	public void loginTestUserIdPassword(
+		@Valid @RequestBody NamePassword namePassword,
+		HttpServletResponse response
+	) {
+		var userInfo = userService.getTestUserInfoByNamePassword(namePassword);
+		cookieUtil.deleteCookie(response, securityProps.ACCESS_TOKEN_KEY);
+		cookieUtil.addCookie(
+			response, securityProps.ACCESS_TOKEN_KEY,
+			AccessToken.makeNew(jwtProps, userInfo.idToken(), userInfo.role()),
+			(int)AccessToken.EXPIRY_DAY.toSeconds(), true
+		);
 	}
 
 	@DeleteMapping("/users")
