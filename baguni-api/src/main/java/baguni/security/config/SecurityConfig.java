@@ -75,7 +75,7 @@ public class SecurityConfig {
 					.requestMatchers(HttpMethod.GET, "/api/shared/{uuid}").permitAll()
 					.requestMatchers(HttpMethod.POST, "/api/events/shared/**").permitAll() // 이벤트는 shared의 경우 검증 X
 					.requestMatchers("/api/login/**").permitAll()
-					.requestMatchers("/api/links").permitAll()
+					.requestMatchers(HttpMethod.GET, "/api/links").permitAll()
 					.anyRequest().authenticated()
 			)
 			.exceptionHandling((configurer ->
@@ -138,7 +138,7 @@ public class SecurityConfig {
 					.requestMatchers("/api-docs/**").permitAll()
 					.requestMatchers("/swagger-ui/**").permitAll()
 					.requestMatchers("/api/login/**").permitAll()
-					.requestMatchers("/api/links").permitAll()
+					.requestMatchers(HttpMethod.GET, "/api/links").permitAll()
 					.anyRequest().authenticated()
 			)
 			.exceptionHandling((configurer ->
