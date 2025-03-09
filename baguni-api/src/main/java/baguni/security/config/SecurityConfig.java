@@ -19,7 +19,6 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import baguni.common.lib.util.RequestLoggingFilter;
-import baguni.security.filter.TestUserAuthenticationFilter;
 import baguni.security.handler.BaguniOAuth2FlowFailureHandler;
 import baguni.security.handler.BaguniApiAuthExceptionEntrypoint;
 import lombok.RequiredArgsConstructor;
@@ -38,7 +37,6 @@ import baguni.security.service.CustomOAuth2Service;
 public class SecurityConfig {
 
 	private final TokenAuthenticationFilter tokenAuthenticationFilter;
-	private final TestUserAuthenticationFilter testUserAuthenticationFilter;
 	private final RequestLoggingFilter requestLoggingFilter;
 
 	private final CustomOAuth2Service customOAuth2Service;
@@ -107,10 +105,7 @@ public class SecurityConfig {
 	/* ******************************************************
 	 *       DEVELOPMENT + STAGING SECURITY SETTING
 	 * ******************************************************
-	 * (1)  테스트 자동화를 위한 API KEY 필터 추가
-	 *      - testUserAuthenticationFilter
-	 *
-	 * (2)  Swagger 경로는 모두 허용
+	 *   Allow /swagger-ui/index.html
 	 */
 	@Bean
 	@Profile({"local", "dev", "staging"})
@@ -128,7 +123,6 @@ public class SecurityConfig {
 			})
 			.sessionManagement(management -> management.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 			.addFilterBefore(requestLoggingFilter, UsernamePasswordAuthenticationFilter.class)
-			.addFilterBefore(testUserAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
 			.addFilterBefore(tokenAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
 			.authorizeHttpRequests(
 				authRequest -> authRequest
