@@ -99,17 +99,17 @@ spring:
       client:
         registration:
           google:
-            redirect-uri: https://api.dev.minlife.me/api/login/oauth2/code/google
+            redirect-uri: https://api.develop.minlife.me/api/login/oauth2/code/google
           kakao:
-            redirect-uri: https://api.dev.minlife.me/api/login/oauth2/code/kakao
+            redirect-uri: https://api.develop.minlife.me/api/login/oauth2/code/kakao
 security:
   cors-patterns:
     - chrome-extension://*
     - https://*.minlife.me
     - https://local.minlife.me:3000
   cookie-domain: minlife.me
-  default-redirect-url: https://app.dev.minlife.me
-  base-url: https://api.dev.minlife.me
+  default-redirect-url: http://api.develop.minlife.me/swagger-ui/index.html
+  base-url: https://api.develop.minlife.me
 ---
 # -----------------------------
 #       STAGING SETTINGS
