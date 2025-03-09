@@ -16,6 +16,9 @@ public class UserErrorCode extends ErrorCode {
 	public static final ErrorCode USER_CREATE_FAILURE = new UserErrorCode(
 		"U-001", HttpStatus.BAD_REQUEST, "사용자 생성 실패", ErrorLevel.MUST_NEVER_HAPPEN()
 	);
+	public static final ErrorCode USER_NICKNAME_DUPLICATE = new UserErrorCode(
+		"U-002", HttpStatus.BAD_REQUEST, "사용자 닉네임 중복", ErrorLevel.CAN_HAPPEN()
+	);
 
 	protected UserErrorCode(String code, HttpStatus status, String message, ErrorLevel errorLevel) {
 		super(code, status, message, errorLevel);

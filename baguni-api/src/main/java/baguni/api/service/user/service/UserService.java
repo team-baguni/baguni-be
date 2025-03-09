@@ -3,6 +3,7 @@ package baguni.api.service.user.service;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import baguni.common.exception.base.ServiceException;
 import baguni.infra.infrastructure.folder.FolderDataHandler;
 import baguni.infra.infrastructure.user.UserDataHandler;
 import baguni.infra.infrastructure.user.dto.UserInfo;
@@ -10,6 +11,7 @@ import baguni.infra.model.util.IDToken;
 import baguni.security.exception.SecurityException;
 import baguni.security.exception.AuthErrorCode;
 import baguni.security.model.OAuth2UserInfo;
+import baguni.common.dto.NamePassword;
 import io.opentelemetry.instrumentation.annotations.WithSpan;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -38,6 +40,7 @@ public class UserService {
 		}
 	}
 
+	// TODO: remove later
 	@Transactional
 	public UserInfo createTestUser() {
 		var user = userDataHandler.createTestUser();
@@ -74,5 +77,23 @@ public class UserService {
 	@Transactional
 	public void deleteUser(Long userId) {
 		userDataHandler.deleteUser(userId);
+	}
+
+	@WithSpan
+	@Transactional(readOnly = true)
+	public UserInfo getTestUserInfoByNamePassword(NamePassword namePassword) {
+		var user = userDataHandler.getTestUser(namePassword);
+		return UserInfo.from(user);
+	}
+
+	@Transactional
+	public UserInfo createTestUser(NamePassword namePassword) {
+		var user = userDataHandler.createTestUser(namePassword);
+		try {
+			folderDataHandler.createMandatoryFolder(user);
+			return UserInfo.from(user);
+		} catch (Exception e) {
+			throw new ServiceException(AuthErrorCode.AUTH_SERVER_FAILURE);
+		}
 	}
 }
