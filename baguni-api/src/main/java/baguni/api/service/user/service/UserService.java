@@ -40,18 +40,6 @@ public class UserService {
 		}
 	}
 
-	// TODO: remove later
-	@Transactional
-	public UserInfo createTestUser() {
-		var user = userDataHandler.createTestUser();
-		try {
-			folderDataHandler.createMandatoryFolder(user);
-			return UserInfo.from(user);
-		} catch (Exception e) {
-			throw new SecurityException(AuthErrorCode.AUTH_SERVER_FAILURE);
-		}
-	}
-
 	@WithSpan
 	@Transactional(readOnly = true)
 	public boolean isSocialUserExists(OAuth2UserInfo oAuthInfo) {
@@ -79,7 +67,6 @@ public class UserService {
 		userDataHandler.deleteUser(userId);
 	}
 
-	@WithSpan
 	@Transactional(readOnly = true)
 	public UserInfo getTestUserInfoByNamePassword(NamePassword namePassword) {
 		var user = userDataHandler.getTestUser(namePassword);

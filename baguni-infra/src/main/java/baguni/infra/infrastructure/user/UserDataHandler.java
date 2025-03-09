@@ -63,14 +63,6 @@ public class UserDataHandler {
 	}
 
 	@Transactional
-	public User createTestUser() {
-		var userName = "test" + userRepository.countByRole(Role.ROLE_TEST);
-		return userRepository.save(
-			User.TestUser(userName, userName + "@baguni.com")
-		);
-	}
-
-	@Transactional
 	public User createTestUser(NamePassword namePassword) {
 		if (userRepository.existsByNickname(namePassword.name())) {
 			throw new ServiceException(UserErrorCode.USER_NICKNAME_DUPLICATE);

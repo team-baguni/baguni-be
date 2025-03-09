@@ -45,19 +45,6 @@ public class DevelopmentController {
 	private final SecurityProperties securityProps;
 	private final JwtProperties jwtProps;
 
-	// TODO: 삭제 예정
-	@PostMapping("/users")
-	@Operation(summary = "테스트 회원 가입 (bearer token)", description = "테스트용 회원을 생성합니다.")
-	@ApiResponses(value = {
-		@ApiResponse(responseCode = "204", description = "테스트 계정 생성 성공")
-	})
-	public ResponseEntity<UserInfoApiResponse> createTestUser() {
-		var userInfo = userService.createTestUser();
-		var response = userApiMapper.toApiResponse(userInfo);
-		return ResponseEntity.ok(response);
-	}
-
-	// TODO: url은 추후 변경
 	@PostMapping("/users/new/signup")
 	@Operation(summary = "테스트 회원 가입 (name + password)", description = "테스트용 회원을 생성합니다.")
 	@ApiResponses(value = {
@@ -71,7 +58,6 @@ public class DevelopmentController {
 		return ResponseEntity.ok(response);
 	}
 
-	// TODO: url은 추후 변경
 	@PostMapping("/users/new/login")
 	@Operation(summary = "테스트 회원 로그인 (name + password)", description = "테스트용 회원 로그인")
 	@ApiResponses(value = {

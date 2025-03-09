@@ -35,7 +35,6 @@ public class SwaggerConfig {
 			.info(apiInfo())
 			.components(new Components()
 				.addSecuritySchemes("accessToken", accessTokenScheme())
-				.addSecuritySchemes("Test User ID-Token", testUserLoginScheme())
 			)
 			.servers(List.of(getServer()))
 			.paths(getAuthPaths())
@@ -58,13 +57,6 @@ public class SwaggerConfig {
 			.type(SecurityScheme.Type.APIKEY)
 			.name("access_token")
 			.in(SecurityScheme.In.COOKIE);
-	}
-
-	private SecurityScheme testUserLoginScheme() {
-		return new SecurityScheme()
-			.type(SecurityScheme.Type.HTTP)
-			.scheme("bearer")
-			.bearerFormat("UUID id token");
 	}
 
 	private Server getServer() {
