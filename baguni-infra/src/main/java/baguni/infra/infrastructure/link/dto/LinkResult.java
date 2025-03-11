@@ -7,7 +7,9 @@ public record LinkResult(
 	String url,
 	String title,
 	String description,
+	String summary,
 	String imageUrl,
+	Boolean isRss,
 	LocalDateTime updatedAt
 ) {
 }
