@@ -55,6 +55,9 @@ public class Link extends BaseEntity {
 	@ColumnDefault("false")
 	private Boolean isRss;
 
+	@Column(name = "summary", columnDefinition = "TEXT")
+	private String summary;
+
 	// Static Factory Method -------------
 
 	public static Link createLink(String url) {
@@ -63,6 +66,7 @@ public class Link extends BaseEntity {
 			.url(url)
 			.title("")
 			.description("")
+			.summary("")
 			.isRss(false)
 			.build();
 	}
@@ -73,6 +77,7 @@ public class Link extends BaseEntity {
 			.url(url)
 			.title(title)
 			.description("")
+			.summary("")
 			.isRss(false)
 			.build();
 	}
@@ -91,6 +96,7 @@ public class Link extends BaseEntity {
 			.url(url)
 			.title(title)
 			.description("")
+			.summary("")
 			.publishedAt(publishedAt)
 			.isRss(true)
 			.build();
@@ -106,7 +112,7 @@ public class Link extends BaseEntity {
 
 	@Builder
 	private Link(
-		String url, String title, String description,
+		String url, String title, String description, String summary,
 		String imageUrl, Boolean isRss, LocalDateTime publishedAt
 	) {
 		if (2048 < url.length()) {
@@ -115,6 +121,7 @@ public class Link extends BaseEntity {
 		this.url = url;
 		this.title = title;
 		this.description = description;
+		this.summary = summary;
 		this.imageUrl = imageUrl;
 		this.isRss = isRss;
 		this.publishedAt = publishedAt;

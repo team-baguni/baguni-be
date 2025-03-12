@@ -20,6 +20,7 @@ public interface LinkMapper {
 	@Mapping(target = "imageUrl", source = "imageUrl", defaultValue = "")
 	@Mapping(target = "isRss", ignore = true)
 	@Mapping(target = "publishedAt", ignore = true)
+	@Mapping(target = "summary", ignore = true)
 	Link of(LinkInfo linkInfo);
 
 	LinkInfo of(Link link);

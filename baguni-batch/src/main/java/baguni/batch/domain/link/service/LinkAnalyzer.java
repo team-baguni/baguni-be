@@ -43,8 +43,8 @@ public class LinkAnalyzer {
 								 .orElse(openGraph.getTag(Metadata.OG_TITLE)
 												  .orElse(""));
 
-			var description = openGraph.getTag(Metadata.OG_DESCRIPTION)
-									   .orElse(openGraph.getTag(Metadata.DESCRIPTION)
+			var description = openGraph.getTag(Metadata.DESCRIPTION)
+									   .orElse(openGraph.getTag(Metadata.OG_DESCRIPTION)
 														.orElse(""));
 
 			var imageUrl = correctImageUrl(url, openGraph.getTag(Metadata.OG_IMAGE)
