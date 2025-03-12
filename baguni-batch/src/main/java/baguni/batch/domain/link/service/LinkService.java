@@ -38,5 +38,8 @@ public class LinkService {
 		if (StringUtils.isNotEmpty(result.title())) {
 			link.updateMetadata(result.title(), result.description(), result.imageUrl());
 		}
+
+		// 본문 크롤링 데이터 꺼내서 처리하기
+		String content = result.content(); // 본문 크롤링한 데이터
 	}
 }
