@@ -19,6 +19,9 @@ import io.github.bonigarcia.wdm.WebDriverManager;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * @author sangwon
+ */
 @Slf4j
 @Component
 @RequiredArgsConstructor
