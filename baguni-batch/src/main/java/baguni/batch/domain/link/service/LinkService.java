@@ -39,13 +39,4 @@ public class LinkService {
 			link.updateMetadata(result.title(), result.description(), result.imageUrl());
 		}
 	}
-
-	@WithSpan
-	@Transactional
-	public void updateFeedLink(String url) {
-		Link link = linkDataHandler.getLink(url);
-		LinkAnalyzeResult result = linkAnalyzer.analyze(url);
-
-		link.updateMetadata(result.title(), result.crawlingContent(), result.imageUrl());
-	}
 }

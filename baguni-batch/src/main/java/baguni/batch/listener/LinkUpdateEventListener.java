@@ -71,13 +71,6 @@ public class LinkUpdateEventListener {
 		var daysPassedSinceLastUpdate = ChronoUnit.DAYS.between(prevUpdatedDate, LocalDate.now());
 		log.info("링크를 최신화한지 {}일 경과", daysPassedSinceLastUpdate);
 
-		// 기술 블로그이면서 요약이 되지 않은 경우 크롤링
-		// 블로그 전체 업데이트를 위해 임시로 조건문 달아놓은 것
-		if (oldLink.isRss() && StringUtils.isEmpty(oldLink.summary())) {
-			linkService.updateFeedLink(oldLink.url());
-			return;
-		}
-
 		if (
 			StringUtils.isEmpty(oldLink.imageUrl())
 				|| StringUtils.isEmpty(oldLink.description())

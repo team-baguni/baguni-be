@@ -1,7 +1,6 @@
 package baguni.batch.domain.link.service;
 
 import java.net.MalformedURLException;
-import java.net.URI;
 import java.net.URL;
 
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -15,7 +14,6 @@ import baguni.common.lib.opengraph.OpenGraph;
 import baguni.common.lib.opengraph.OpenGraphException;
 import baguni.common.lib.opengraph.OpenGraphReader;
 import baguni.common.exception.error_code.LinkErrorCode;
-import baguni.common.lib.opengraph.SeleniumCrawler;
 import io.opentelemetry.instrumentation.annotations.WithSpan;
 import lombok.extern.slf4j.Slf4j;
 
@@ -28,20 +26,17 @@ import lombok.extern.slf4j.Slf4j;
 public class LinkAnalyzer {
 
 	private final OpenGraphReader openGraphReader;
-	private final SeleniumCrawler seleniumCrawler;
 
 	public LinkAnalyzer(
-		@Qualifier("selenium") OpenGraphReader openGraphReader, SeleniumCrawler seleniumCrawler
+		@Qualifier("selenium") OpenGraphReader openGraphReader
 	) {
 		this.openGraphReader = openGraphReader;
-		this.seleniumCrawler = seleniumCrawler;
 	}
 
 	@WithSpan
 	public LinkAnalyzeResult analyze(String url) {
 		try {
 			var openGraph = new OpenGraph(url, openGraphReader);
-			String crawlingContent = seleniumCrawler.getContent(url);
 
 			// 한컴 테크 블로그의 Meta Title이 "한컴테크"로 고정되어 있어서 <title> 우선적으로 적용
 			var title = openGraph.getTag(Metadata.TITLE)
@@ -60,7 +55,6 @@ public class LinkAnalyzer {
 				.builder()
 				.title(title)
 				.description(description)
-				.crawlingContent(crawlingContent)
 				.imageUrl(imageUrl)
 				.build();
 
