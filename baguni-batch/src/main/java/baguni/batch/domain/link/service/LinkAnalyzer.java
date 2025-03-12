@@ -10,11 +10,12 @@ import baguni.batch.domain.link.dto.LinkAnalyzeResult;
 import baguni.common.exception.base.ServiceException;
 
 import baguni.common.lib.opengraph.Metadata;
-import baguni.common.lib.opengraph.OpenGraph;
-import baguni.common.lib.opengraph.OpenGraphException;
-import baguni.common.lib.opengraph.OpenGraphReader;
+import baguni.common.lib.opengraph.CrawlResult;
+import baguni.common.lib.opengraph.SeleniumCrawler;
+import baguni.common.lib.opengraph.SeleniumException;
 import baguni.common.exception.error_code.LinkErrorCode;
 import io.opentelemetry.instrumentation.annotations.WithSpan;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -23,42 +24,41 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 @Component
+@RequiredArgsConstructor
 public class LinkAnalyzer {
 
-	private final OpenGraphReader openGraphReader;
-
-	public LinkAnalyzer(
-		@Qualifier("selenium") OpenGraphReader openGraphReader
-	) {
-		this.openGraphReader = openGraphReader;
-	}
+	private final SeleniumCrawler seleniumCrawler;
 
 	@WithSpan
 	public LinkAnalyzeResult analyze(String url) {
 		try {
-			var openGraph = new OpenGraph(url, openGraphReader);
+			var crawlResult = new CrawlResult(url, seleniumCrawler);
 
 			// 한컴 테크 블로그의 Meta Title이 "한컴테크"로 고정되어 있어서 <title> 우선적으로 적용
-			var title = openGraph.getTag(Metadata.TITLE)
-								 .orElse(openGraph.getTag(Metadata.OG_TITLE)
+			var title = crawlResult.getTag(Metadata.TITLE)
+								 .orElse(crawlResult.getTag(Metadata.OG_TITLE)
 												  .orElse(""));
 
-			var description = openGraph.getTag(Metadata.DESCRIPTION)
-									   .orElse(openGraph.getTag(Metadata.OG_DESCRIPTION)
+			var description = crawlResult.getTag(Metadata.DESCRIPTION)
+									   .orElse(crawlResult.getTag(Metadata.OG_DESCRIPTION)
 														.orElse(""));
 
-			var imageUrl = correctImageUrl(url, openGraph.getTag(Metadata.OG_IMAGE)
-														 .orElse(openGraph.getTag(Metadata.IMAGE)
-																		  .orElse(openGraph.getTag(Metadata.ICON)
+			var imageUrl = correctImageUrl(url, crawlResult.getTag(Metadata.OG_IMAGE)
+														 .orElse(crawlResult.getTag(Metadata.IMAGE)
+																		  .orElse(crawlResult.getTag(Metadata.ICON)
 																						   .orElse(""))));
+			var content = crawlResult.getTag(Metadata.CONTENT)
+								  .orElse("");
+
 			return LinkAnalyzeResult
 				.builder()
 				.title(title)
 				.description(description)
+				.content(content)
 				.imageUrl(imageUrl)
 				.build();
 
-		} catch (OpenGraphException e) {
+		} catch (SeleniumException e) {
 			log.error(e.getMessage(), e);
 			throw new ServiceException(LinkErrorCode.LINK_ANALYZE_FAILURE);
 		}

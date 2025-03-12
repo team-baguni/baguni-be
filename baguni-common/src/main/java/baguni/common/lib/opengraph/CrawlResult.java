@@ -9,23 +9,23 @@ import java.util.Optional;
  * @author minkyeu kim
  * OpenGraph Metadata Utility Class
  */
-public class OpenGraph {
+public class CrawlResult {
 
-	private final Map<String, String> openGraphTags;
+	private final Map<String, String> htmlTags;
 
-	public OpenGraph(String uri, OpenGraphReader openGraphReader) throws OpenGraphException {
+	public CrawlResult(String uri, SeleniumCrawler seleniumCrawler) throws SeleniumException {
 		try {
 			var parsedUri = new URI(uri);
-			this.openGraphTags = openGraphReader.read(parsedUri);
+			this.htmlTags = seleniumCrawler.crawl(parsedUri);
 		} catch (URISyntaxException e) {
-			throw new OpenGraphException("Invalid URI: " + uri, e);
+			throw new SeleniumException("Invalid URI: " + uri, e);
 		}
 	}
 
 	public Optional<String> getTag(Metadata.MetadataTag metadataTag) {
 		var key = metadataTag.key();
-		if (openGraphTags.containsKey(key)) {
-			return Optional.of(openGraphTags.get(key));
+		if (htmlTags.containsKey(key)) {
+			return Optional.of(htmlTags.get(key));
 		}
 		return Optional.empty();
 	}

@@ -59,6 +59,9 @@ public class Metadata {
 	// A URL to a video file that complements this object.
 	public static final MetadataTag VIDEO = MetadataTag.of("og:video");
 
+	// TODO: 메타데이터에 포함시키면 안됨. 밖으로 빼야 함.
+	public static final MetadataTag CONTENT = MetadataTag.of("content");
+
 	/**
 	 * VO for metadata key
 	 */
