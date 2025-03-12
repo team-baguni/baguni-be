@@ -2,9 +2,12 @@ package baguni.common.lib.opengraph;
 
 import java.time.Duration;
 
+import org.springframework.stereotype.Component;
+
 import lombok.Getter;
 
 @Getter
+@Component
 public class SeleniumOption {
 	private final String userAgent;
 	private final Duration httpRequestTimeoutyDuration;
