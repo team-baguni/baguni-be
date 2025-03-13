@@ -4,6 +4,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import baguni.batch.domain.feed.util.Llama32KoreanAgent;
 import baguni.batch.domain.link.dto.LinkAnalyzeResult;
 import baguni.infra.model.link.Link;
 import baguni.infra.infrastructure.link.LinkDataHandler;
@@ -21,6 +22,8 @@ public class LinkService {
 	private final LinkDataHandler linkDataHandler;
 	private final LinkAnalyzer linkAnalyzer;
 	private final LinkMapper linkMapper;
+
+	private final Llama32KoreanAgent llamaAgent;
 
 	@WithSpan
 	@Transactional(readOnly = true)
@@ -40,6 +43,12 @@ public class LinkService {
 		}
 
 		// 본문 크롤링 데이터 꺼내서 처리하기
-		String content = result.content(); // 본문 크롤링한 데이터
+		// TODO: 1. youtube 링크는 어떻게 작동할지 확실하지 않아서, 일단 Feed 블로그만 하도록 처리
+		//       2. 링크 테이블 isRss를 isFeed로 변경 필요
+		String content = result.content();
+		if (link.isBlogFeed()) {
+			String summary = llamaAgent.summarize(content).response(); // 요약 결과
+			link.updateSummary(summary);
+		}
 	}
 }
