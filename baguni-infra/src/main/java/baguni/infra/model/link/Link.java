@@ -108,6 +108,14 @@ public class Link extends BaseEntity {
 		this.imageUrl = imageUrl;
 	}
 
+	public void updateSummary(String summary) {
+		this.summary = summary;
+	}
+
+	public boolean isBlogFeed() {
+		return this.isRss;
+	}
+
 	// Private Builder -------------
 
 	@Builder
