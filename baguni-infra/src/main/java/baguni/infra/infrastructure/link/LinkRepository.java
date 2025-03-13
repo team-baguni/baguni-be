@@ -26,4 +26,10 @@ public interface LinkRepository extends JpaRepository<Link, Long> {
 				ORDER BY li.publishedAt DESC
 		""")
 	List<Link> findAllRssBlogArticlesOrderByPublishedDate(Pageable pageable);
+
+	@Query("""
+			SELECT li FROM Link li 
+				WHERE li.isRss=true 
+		""")
+	List<Link> getAllFeedLinks();
 }

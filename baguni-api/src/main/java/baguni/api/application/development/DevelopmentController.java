@@ -1,7 +1,10 @@
 package baguni.api.application.development;
 
+import java.time.LocalDateTime;
+
 import org.springframework.context.annotation.Profile;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -11,6 +14,9 @@ import org.springframework.web.bind.annotation.RestController;
 import baguni.api.application.user.controller.dto.UserApiMapper;
 import baguni.api.application.user.controller.dto.UserInfoApiResponse;
 import baguni.api.service.user.service.UserService;
+import baguni.common.event.EventMessenger;
+import baguni.common.event.LinkReadEvent;
+import baguni.infra.infrastructure.link.LinkRepository;
 import baguni.security.config.JwtProperties;
 import baguni.security.config.SecurityProperties;
 import baguni.security.util.AccessToken;
@@ -26,6 +32,7 @@ import lombok.RequiredArgsConstructor;
 
 /**
  * 개발 전용 API를 제공하는 Controller입니다.
+ * 운영에는 반영되지 않습니다.
  */
 @RestController
 @RequiredArgsConstructor
@@ -44,6 +51,9 @@ public class DevelopmentController {
 	private final UserApiMapper userApiMapper;
 	private final SecurityProperties securityProps;
 	private final JwtProperties jwtProps;
+	// ----------- 개발 전용임으로, 기존 레이어 규칙에 관계 없이 사용 -------0
+	private final LinkRepository linkRepository;
+	private final EventMessenger eventMessenger;
 
 	@PostMapping("/users/new/signup")
 	@Operation(summary = "테스트 회원 가입 (name + password)", description = "테스트용 회원을 생성합니다.")
@@ -87,6 +97,24 @@ public class DevelopmentController {
 	) {
 		userService.deleteUser(userId);
 		cookieUtil.clearCookies(response);
+		return ResponseEntity.noContent().build();
+	}
+
+	@PostMapping
+	@Operation(summary = "링크 분석 배치 시작", description = """
+		링크 분석 배치를 작동시킵니다.
+		현재는 Feed 글만 분석하며, 모든 과정이 동기적으로 처리됩니다.
+		분석 기능이 완료되면 해당 메서드는 삭제할 예정입니다.
+		""")
+	@ApiResponses(value = {
+		@ApiResponse(responseCode = "204", description = "시작 성공")
+	})
+	@Transactional
+	public ResponseEntity<Void> runLinkAnalyzeBatch() {
+		for (var link : linkRepository.getAllFeedLinks()) {
+			link.changeUpdatedAt(LocalDateTime.now().minusDays(100));
+			eventMessenger.send(new LinkReadEvent(link.getUrl()));
+		}
 		return ResponseEntity.noContent().build();
 	}
 }
