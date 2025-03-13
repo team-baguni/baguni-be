@@ -6,37 +6,33 @@ import org.springframework.boot.web.client.ClientHttpRequestFactories;
 import org.springframework.boot.web.client.ClientHttpRequestFactorySettings;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.client.ClientHttpRequestFactory;
 import org.springframework.web.client.RestClient;
 import org.springframework.web.client.support.RestClientAdapter;
 import org.springframework.web.service.invoker.HttpServiceProxyFactory;
 
-import baguni.batch.domain.feed.util.FeedApi;
+import baguni.batch.domain.feed.util.OllamaApi;
 
 @Configuration
-public class RestClientConfig {
+public class OllamaApiConfig {
 
-	private static final Duration CONNECTION_TIMEOUT = Duration.ofSeconds(5);
-	private static final Duration READ_TIMEOUT = Duration.ofSeconds(10);
-	private static final String USER_AGENT = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Safari/537.36";
+	private static final Duration CONNECTION_TIMEOUT = Duration.ofSeconds(60 * 5);
+	private static final Duration READ_TIMEOUT = Duration.ofSeconds(60 * 5);
+	private static final String OLLAMA_SERVER_URL = "http://ollama:11434";
 
 	@Bean
-	public FeedApi rssFeedApi(RestClient restClient) {
+	public OllamaApi ollamaApi(RestClient.Builder restClientBuilder) {
+		var restClient = restClientBuilder.baseUrl(OLLAMA_SERVER_URL)
+										  .defaultHeader("Content-Type", MediaType.APPLICATION_JSON_VALUE)
+										  .defaultHeader("Accept", MediaType.APPLICATION_JSON_VALUE)
+										  .requestFactory(clientHttpRequestFactory())
+										  .build();
 		var adapter = RestClientAdapter.create(restClient);
 		var proxy = HttpServiceProxyFactory.builderFor(adapter).build();
-		return proxy.createClient(FeedApi.class);
+		return proxy.createClient(OllamaApi.class);
 	}
 
-	@Bean
-	public RestClient restClient(RestClient.Builder restClientBuilder) {
-		return restClientBuilder
-			.defaultHeader(HttpHeaders.USER_AGENT, USER_AGENT)
-			.requestFactory(clientHttpRequestFactory())
-			.build();
-	}
-
-	@Bean
 	public ClientHttpRequestFactory clientHttpRequestFactory() {
 		ClientHttpRequestFactorySettings settings = ClientHttpRequestFactorySettings.DEFAULTS
 			.withConnectTimeout(CONNECTION_TIMEOUT)
