@@ -145,5 +145,7 @@ public class Link {
 		this.imageUrl = imageUrl;
 		this.isRss = isRss;
 		this.publishedAt = publishedAt;
+		this.createdAt = LocalDateTime.now();
+		this.updatedAt = this.createdAt;
 	}
 }
