@@ -111,10 +111,12 @@ public class Link {
 		this.title = title;
 		this.description = description;
 		this.imageUrl = imageUrl;
+		changeUpdatedAt(LocalDateTime.now());
 	}
 
 	public void updateSummary(String summary) {
 		this.summary = summary;
+		changeUpdatedAt(LocalDateTime.now());
 	}
 
 	public boolean isBlogFeed() {
@@ -143,5 +145,7 @@ public class Link {
 		this.imageUrl = imageUrl;
 		this.isRss = isRss;
 		this.publishedAt = publishedAt;
+		this.createdAt = LocalDateTime.now();
+		this.updatedAt = this.createdAt;
 	}
 }
