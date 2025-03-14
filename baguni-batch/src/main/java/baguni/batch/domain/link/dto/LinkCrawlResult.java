@@ -3,7 +3,7 @@ package baguni.batch.domain.link.dto;
 import lombok.Builder;
 
 @Builder
-public record LinkAnalyzeResult(
+public record LinkCrawlResult(
 	String imageUrl,
 	String title,
 	String description,
