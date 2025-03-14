@@ -1,4 +1,4 @@
-package baguni.batch.domain.feed.dto;
+package baguni.batch.domain.analyzer.ollama;
 
 public record LlamaResponse(
 	String model,

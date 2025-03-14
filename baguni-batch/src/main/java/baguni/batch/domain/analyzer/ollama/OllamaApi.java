@@ -1,10 +1,7 @@
-package baguni.batch.domain.feed.util;
+package baguni.batch.domain.analyzer.ollama;
 
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.service.annotation.PostExchange;
-
-import baguni.batch.domain.feed.dto.LlamaRequest;
-import baguni.batch.domain.feed.dto.LlamaResponse;
 
 /**
  * Ollama 로컬 서버와 통신하기 위한 Api Client
