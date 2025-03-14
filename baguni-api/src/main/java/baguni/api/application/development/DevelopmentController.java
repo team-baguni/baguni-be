@@ -16,6 +16,8 @@ import baguni.api.application.user.controller.dto.UserInfoApiResponse;
 import baguni.api.service.user.service.UserService;
 import baguni.common.event.EventMessenger;
 import baguni.common.event.LinkReadEvent;
+import baguni.common.exception.base.ServiceException;
+import baguni.common.exception.error_code.LinkErrorCode;
 import baguni.infra.infrastructure.link.LinkRepository;
 import baguni.security.config.JwtProperties;
 import baguni.security.config.SecurityProperties;
@@ -103,7 +105,7 @@ public class DevelopmentController {
 	@PostMapping
 	@Operation(summary = "링크 분석 배치 시작", description = """
 		링크 분석 배치를 작동시킵니다.
-		현재는 Feed 글만 분석하며, 모든 과정이 동기적으로 처리됩니다.
+		현재 요약+카테고리를 분석은 Feed글에만 동작합니다.
 		분석 기능이 완료되면 해당 메서드는 삭제할 예정입니다.
 		""")
 	@ApiResponses(value = {
@@ -115,6 +117,25 @@ public class DevelopmentController {
 			link.changeUpdatedAt(LocalDateTime.now().minusDays(100));
 			eventMessenger.send(new LinkReadEvent(link.getUrl()));
 		}
+		return ResponseEntity.noContent().build();
+	}
+
+	@PostMapping
+	@Operation(summary = "특정 링크 분석 시작", description = """
+		특정 링크만 분석을 시작합니다.
+		현재 요약+카테고리를 분석은 Feed글에만 동작합니다.
+		분석 기능이 완료되면 해당 메서드는 삭제할 예정입니다.
+		""")
+	@ApiResponses(value = {
+		@ApiResponse(responseCode = "204", description = "시작 성공")
+	})
+	@Transactional
+	public ResponseEntity<Void> runLinkAnalyze(@Valid @RequestBody String feedUrl) {
+		var link = linkRepository
+			.findByUrl(feedUrl)
+			.orElseThrow(() -> new ServiceException(LinkErrorCode.LINK_NOT_FOUND));
+		link.changeUpdatedAt(LocalDateTime.now().minusDays(100));
+		eventMessenger.send(new LinkReadEvent(link.getUrl()));
 		return ResponseEntity.noContent().build();
 	}
 }

@@ -4,6 +4,7 @@ import org.springframework.stereotype.Component;
 
 import baguni.batch.domain.feed.dto.LlamaRequest;
 import baguni.batch.domain.feed.dto.LlamaResponse;
+import io.opentelemetry.instrumentation.annotations.WithSpan;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -26,7 +27,9 @@ public class Llama32KoreanAgent {
 		);
 	}
 
+	@WithSpan
 	public LlamaResponse summarize(String dataToSummarize) {
+		log.info("summarize data: {}", dataToSummarize);
 		return ollamaApi.sendRequest(
 			LlamaRequest
 				.builder()
