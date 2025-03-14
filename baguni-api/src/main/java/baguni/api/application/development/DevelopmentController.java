@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -120,7 +121,7 @@ public class DevelopmentController {
 		return ResponseEntity.noContent().build();
 	}
 
-	@PostMapping
+	@PatchMapping
 	@Operation(summary = "특정 링크 분석 시작", description = """
 		특정 링크만 분석을 시작합니다.
 		현재 요약+카테고리를 분석은 Feed글에만 동작합니다.
