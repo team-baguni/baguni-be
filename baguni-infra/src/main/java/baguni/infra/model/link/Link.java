@@ -9,7 +9,6 @@ import org.hibernate.annotations.ColumnDefault;
 
 import baguni.common.exception.base.ServiceException;
 import baguni.common.exception.error_code.LinkErrorCode;
-import baguni.infra.model.common.BaseEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -25,7 +24,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Link extends BaseEntity {
+public class Link {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -57,6 +56,12 @@ public class Link extends BaseEntity {
 
 	@Column(name = "summary", columnDefinition = "TEXT")
 	private String summary;
+
+	@Column(name = "created_at", updatable = false, nullable = false)
+	protected LocalDateTime createdAt;
+
+	@Column(name = "updated_at", nullable = false)
+	protected LocalDateTime updatedAt;
 
 	// Static Factory Method -------------
 
