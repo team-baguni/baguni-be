@@ -35,7 +35,7 @@ services:
       - --skip-character-set-client-handshake # 클라이언트 character set 값을 보낼 때 서버에서 이를 무시하는 명령어, docker linux에서 locale 설정하지 않아 default 값인 latin1로 설정
       - --lower_case_table_names=1
     networks:
-      - baguni-dev-network
+      - baguni-local-network
 
   # **********************************
   #   BAGUNI MESSAGE QUEUE

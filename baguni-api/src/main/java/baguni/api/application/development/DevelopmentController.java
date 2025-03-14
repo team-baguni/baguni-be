@@ -4,7 +4,6 @@ import java.time.LocalDateTime;
 
 import org.springframework.context.annotation.Profile;
 import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -32,11 +31,13 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * 개발 전용 API를 제공하는 Controller입니다.
  * 운영에는 반영되지 않습니다.
  */
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 @Profile({"local", "dev", "staging"})
@@ -112,11 +113,17 @@ public class DevelopmentController {
 	@ApiResponses(value = {
 		@ApiResponse(responseCode = "204", description = "시작 성공")
 	})
-	@Transactional
 	public ResponseEntity<Void> runLinkAnalyzeBatch() {
 		for (var link : linkRepository.getAllFeedLinks()) {
-			link.changeUpdatedAt(LocalDateTime.now().minusDays(100));
-			eventMessenger.send(new LinkReadEvent(link.getUrl()));
+			try {
+				// --------------------------------------------
+				link.changeUpdatedAt(LocalDateTime.now().minusDays(100));
+				linkRepository.save(link);
+				// --------------------------------------------
+				eventMessenger.send(new LinkReadEvent(link.getUrl()));
+			} catch (Exception e) {
+				log.error("링크 분석 시작 실패, url=", link.getUrl(), e);
+			}
 		}
 		return ResponseEntity.noContent().build();
 	}
@@ -130,12 +137,14 @@ public class DevelopmentController {
 	@ApiResponses(value = {
 		@ApiResponse(responseCode = "204", description = "시작 성공")
 	})
-	@Transactional
 	public ResponseEntity<Void> runLinkAnalyze(@Valid @RequestBody String feedUrl) {
+		// ----------------------------------
 		var link = linkRepository
 			.findByUrl(feedUrl)
+			.map(li -> li.changeUpdatedAt(LocalDateTime.now().minusDays(100)))
+			.map(linkRepository::save)
 			.orElseThrow(() -> new ServiceException(LinkErrorCode.LINK_NOT_FOUND));
-		link.changeUpdatedAt(LocalDateTime.now().minusDays(100));
+		// ----------------------------------
 		eventMessenger.send(new LinkReadEvent(link.getUrl()));
 		return ResponseEntity.noContent().build();
 	}

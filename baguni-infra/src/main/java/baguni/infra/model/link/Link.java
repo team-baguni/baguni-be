@@ -116,8 +116,9 @@ public class Link extends BaseEntity {
 		return this.isRss;
 	}
 
-	public void changeUpdatedAt(LocalDateTime updatedAt) {
+	public Link changeUpdatedAt(LocalDateTime updatedAt) {
 		this.updatedAt = updatedAt;
+		return this;
 	}
 
 	// Private Builder -------------
