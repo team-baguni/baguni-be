@@ -1,4 +1,4 @@
-package baguni.batch.domain.link.dto;
+package baguni.batch.domain.crawler;
 
 import lombok.Builder;
 

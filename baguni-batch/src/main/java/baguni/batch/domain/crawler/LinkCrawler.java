@@ -1,11 +1,10 @@
-package baguni.batch.domain.link.service;
+package baguni.batch.domain.crawler;
 
 import java.net.MalformedURLException;
 import java.net.URL;
 
 import org.springframework.stereotype.Component;
 
-import baguni.batch.domain.link.dto.LinkCrawlResult;
 import baguni.common.exception.base.ServiceException;
 
 import baguni.common.lib.opengraph.Metadata;
