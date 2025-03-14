@@ -1,4 +1,4 @@
-package baguni.batch.domain.feed.util;
+package baguni.batch.domain.analyzer;
 
 public class BlogExamples {
 	public static final String AWS_REINVENT = """

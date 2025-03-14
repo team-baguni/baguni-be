@@ -1,9 +1,9 @@
-package baguni.batch.domain.link.dto;
+package baguni.batch.domain.crawler;
 
 import lombok.Builder;
 
 @Builder
-public record LinkAnalyzeResult(
+public record LinkCrawlResult(
 	String imageUrl,
 	String title,
 	String description,

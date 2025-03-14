@@ -1,12 +1,10 @@
-package baguni.batch.domain.link.service;
+package baguni.batch.domain.crawler;
 
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
-import baguni.batch.domain.link.dto.LinkAnalyzeResult;
 import baguni.common.exception.base.ServiceException;
 
 import baguni.common.lib.opengraph.Metadata;
@@ -25,32 +23,32 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class LinkAnalyzer {
+public class LinkCrawler {
 
 	private final SeleniumCrawler seleniumCrawler;
 
 	@WithSpan
-	public LinkAnalyzeResult analyze(String url) {
+	public LinkCrawlResult crawl(String url) {
 		try {
 			var crawlResult = new CrawlResult(url, seleniumCrawler);
 
 			// 한컴 테크 블로그의 Meta Title이 "한컴테크"로 고정되어 있어서 <title> 우선적으로 적용
 			var title = crawlResult.getTag(Metadata.TITLE)
-								 .orElse(crawlResult.getTag(Metadata.OG_TITLE)
-												  .orElse(""));
+								   .orElse(crawlResult.getTag(Metadata.OG_TITLE)
+													  .orElse(""));
 
 			var description = crawlResult.getTag(Metadata.DESCRIPTION)
-									   .orElse(crawlResult.getTag(Metadata.OG_DESCRIPTION)
-														.orElse(""));
+										 .orElse(crawlResult.getTag(Metadata.OG_DESCRIPTION)
+															.orElse(""));
 
 			var imageUrl = correctImageUrl(url, crawlResult.getTag(Metadata.OG_IMAGE)
-														 .orElse(crawlResult.getTag(Metadata.IMAGE)
-																		  .orElse(crawlResult.getTag(Metadata.ICON)
-																						   .orElse(""))));
+														   .orElse(crawlResult.getTag(Metadata.IMAGE)
+																			  .orElse(crawlResult.getTag(Metadata.ICON)
+																								 .orElse(""))));
 			var content = crawlResult.getTag(Metadata.CONTENT)
-								  .orElse("");
+									 .orElse("");
 
-			return LinkAnalyzeResult
+			return LinkCrawlResult
 				.builder()
 				.title(title)
 				.description(description)
