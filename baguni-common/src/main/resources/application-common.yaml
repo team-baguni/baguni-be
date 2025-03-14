@@ -3,7 +3,7 @@
 otel:
   exporter:
     otlp:
-      endpoint: http://mornitor-alloy:4318
+      endpoint: http://monitor-alloy:4318
 ---
 # -----------------------------
 #       LOCAL SETTINGS
