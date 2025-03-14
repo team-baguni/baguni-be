@@ -7,7 +7,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import baguni.batch.domain.analyzer.ArticleAnalyzer;
-import baguni.batch.domain.link.dto.LinkCrawlResult;
+import baguni.batch.domain.crawler.LinkCrawler;
+import baguni.batch.domain.crawler.LinkCrawlResult;
 import baguni.infra.model.link.Link;
 import baguni.infra.infrastructure.link.LinkDataHandler;
 import baguni.infra.infrastructure.link.dto.LinkMapper;
@@ -53,6 +54,7 @@ public class LinkService {
 
 		// TODO: youtube 링크는 어떻게 작동할지 확실하지 않아서, 일단 Feed 블로그만 하도록 처리
 		if (link.isBlogFeed()) {
+			log.info("본문 내용 = {}", crawlResult.content());
 			String summary = articleAnalyzer.summarize(crawlResult.content());
 			log.info("요약 결과 = {}", summary);
 			link.updateSummary(summary);
