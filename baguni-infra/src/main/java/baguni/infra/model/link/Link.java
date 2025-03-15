@@ -3,6 +3,7 @@ package baguni.infra.model.link;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.util.List;
 import java.util.Objects;
 
 import org.hibernate.annotations.ColumnDefault;
@@ -54,8 +55,14 @@ public class Link {
 	@ColumnDefault("false")
 	private Boolean isRss;
 
+	@Column(name = "content", columnDefinition = "TEXT")
+	private String content;
+
 	@Column(name = "summary", columnDefinition = "TEXT")
 	private String summary;
+
+	@Column(name = "categories", columnDefinition = "TEXT")
+	private String categories; // TODO: 기능 개발 끝나면 삭제 하기
 
 	@Column(name = "created_at", updatable = false, nullable = false)
 	protected LocalDateTime createdAt;
@@ -71,7 +78,6 @@ public class Link {
 			.url(url)
 			.title("")
 			.description("")
-			.summary("")
 			.isRss(false)
 			.build();
 	}
@@ -82,7 +88,6 @@ public class Link {
 			.url(url)
 			.title(title)
 			.description("")
-			.summary("")
 			.isRss(false)
 			.build();
 	}
@@ -101,22 +106,37 @@ public class Link {
 			.url(url)
 			.title(title)
 			.description("")
-			.summary("")
 			.publishedAt(publishedAt)
 			.isRss(true)
 			.build();
 	}
 
-	public void updateMetadata(String title, String description, String imageUrl) {
+	public Link updateMetadata(String title, String description, String imageUrl) {
 		this.title = title;
 		this.description = description;
 		this.imageUrl = imageUrl;
 		changeUpdatedAt(LocalDateTime.now());
+		return this;
 	}
 
-	public void updateSummary(String summary) {
+	public Link updateContent(String content) {
+		this.content = content;
+		return this;
+	}
+
+	public Link updateCategories(List<String> categories) {
+		if (Objects.isNull(categories) || categories.isEmpty()) {
+			this.categories = null;
+			return this;
+		}
+		this.categories = String.join(",", categories);
+		return this;
+	}
+
+	public Link updateSummary(String summary) {
 		this.summary = summary;
 		changeUpdatedAt(LocalDateTime.now());
+		return this;
 	}
 
 	public boolean isBlogFeed() {
