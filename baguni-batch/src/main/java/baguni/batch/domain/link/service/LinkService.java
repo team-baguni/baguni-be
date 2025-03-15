@@ -1,19 +1,16 @@
 package baguni.batch.domain.link.service;
 
-import org.apache.commons.lang3.StringUtils;
+import java.util.concurrent.TimeUnit;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import baguni.batch.domain.analyzer.ArticleAnalyzer;
 import baguni.batch.domain.crawler.LinkCrawler;
-import baguni.batch.domain.crawler.LinkCrawlResult;
-import baguni.infra.model.link.Link;
+import baguni.infra.infrastructure.link.dto.LinkCommand;
 import baguni.infra.infrastructure.link.LinkDataHandler;
-import baguni.infra.infrastructure.link.dto.LinkMapper;
-import baguni.infra.infrastructure.link.dto.LinkResult;
-import io.opentelemetry.instrumentation.annotations.SpanAttribute;
 import io.opentelemetry.instrumentation.annotations.WithSpan;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,7 +22,6 @@ public class LinkService {
 
 	private final LinkDataHandler linkDataHandler;
 	private final LinkCrawler linkCrawler;
-	private final LinkMapper linkMapper;
 
 	private ArticleAnalyzer articleAnalyzer;
 
@@ -36,28 +32,55 @@ public class LinkService {
 	}
 
 	@WithSpan
-	@Transactional(readOnly = true)
-	public LinkResult getLinkResultByUrl(String url) {
-		Link link = linkDataHandler.getLink(url);
-		return linkMapper.toLinkResult(link);
+	public void updateLink(String url) {
+		var link = linkDataHandler.getLink(url);
+
+		if (link.getDaysPassed() < 90)
+			return;
+		if (!link.isBlogFeed())
+			return;
+
+		var crawled = linkCrawler.crawl(url);
+		linkDataHandler.updateLink(
+			new LinkCommand.UpdateWithCrawledData(
+				url,
+				crawled.title(),
+				crawled.description(), // 삭제 예정
+				crawled.imageUrl(),
+				crawled.content()
+			)
+		);
 	}
 
-	@WithSpan
-	@Transactional
-	public void analyzeAndUpdateLink(@SpanAttribute("url") String url) {
-		Link link = linkDataHandler.getLink(url);
-		LinkCrawlResult crawlResult = linkCrawler.crawl(url);
-
-		if (StringUtils.isNotEmpty(crawlResult.title())) {
-			link.updateMetadata(crawlResult.title(), crawlResult.description(), crawlResult.imageUrl());
+	/**
+	 * 이전 요약 작업이 끝나고, 30분 대기 후 다음 작업 실행
+	 */
+	@Scheduled(fixedDelay = 30, timeUnit = TimeUnit.MINUTES)
+	public void analyzeSummaryAndUpdate() {
+		log.info("Scheduled: 요약 작업을 시작");
+		for (var link : linkDataHandler.getLinksForSummary()) {
+			linkDataHandler.updateLink(
+				new LinkCommand.UpdateSummary(
+					link.url(),
+					articleAnalyzer.summarize(link.content())
+				)
+			);
 		}
+	}
 
-		// TODO: youtube 링크는 어떻게 작동할지 확실하지 않아서, 일단 Feed 블로그만 하도록 처리
-		if (link.isBlogFeed()) {
-			log.info("본문 내용 = {}", crawlResult.content());
-			String summary = articleAnalyzer.summarize(crawlResult.content());
-			log.info("요약 결과 = {}", summary);
-			link.updateSummary(summary);
+	/**
+	 * 이전 카테고리 작업이 끝나고, 30분 대기 후 다음 작업 실행
+	 */
+	@Scheduled(fixedDelay = 30, timeUnit = TimeUnit.MINUTES)
+	public void analyzeCategoriesAndUpdate() {
+		log.info("Scheduled: 카테고리 분류 작업을 시작");
+		for (var link : linkDataHandler.getLinksForCategories()) {
+			linkDataHandler.updateLink(
+				new LinkCommand.UpdateCategories(
+					link.url(),
+					articleAnalyzer.categorize(link.summary())
+				)
+			);
 		}
 	}
 }

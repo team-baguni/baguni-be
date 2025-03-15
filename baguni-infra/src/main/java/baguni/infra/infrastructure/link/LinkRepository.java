@@ -20,16 +20,32 @@ public interface LinkRepository extends JpaRepository<Link, Long> {
 	boolean existsByUrl(String url);
 
 	@Query("""
-			SELECT li FROM Link li 
-				WHERE li.isRss=true 
-				AND li.imageUrl IS NOT NULL 
+			SELECT li FROM Link li
+				WHERE li.isRss=true
+				AND li.imageUrl IS NOT NULL
 				ORDER BY li.publishedAt DESC
 		""")
 	List<Link> findAllRssBlogArticlesOrderByPublishedDate(Pageable pageable);
 
 	@Query("""
-			SELECT li FROM Link li 
-				WHERE li.isRss=true 
+			SELECT li FROM Link li
+				WHERE li.isRss=true
 		""")
 	List<Link> getAllFeedLinks();
+
+	@Query("""
+			SELECT li FROM Link li
+				WHERE li.content IS NOT NULL
+				AND li.summary IS NULL
+				AND li.categories IS NULL
+		""")
+	List<Link> findLinksWithOnlyContentAvailable();
+
+	@Query("""
+			SELECT li FROM Link li
+				WHERE li.content IS NOT NULL
+				AND li.summary IS NOT NULL
+				AND li.categories IS NULL
+		""")
+	List<Link> findLinksWithContentAndSummaryAvailable();
 }
