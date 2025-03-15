@@ -161,7 +161,7 @@ public class SharedFolderService {
 				SharedFolderResult.SharedPickInfo
 					.builder()
 					.title(pick.getTitle())
-					.linkInfo(linkMapper.of(pick.getLink()))
+					.linkInfo(linkMapper.toLinkInfo(pick.getLink()))
 					.tagIdxList(pick.getTagIdOrderedList().stream().map(alternativeTagIdMap::get).toList())
 					.createdAt(pick.getCreatedAt())
 					.updatedAt(pick.getUpdatedAt())

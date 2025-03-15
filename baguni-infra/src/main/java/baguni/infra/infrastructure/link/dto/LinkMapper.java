@@ -23,7 +23,7 @@ public interface LinkMapper {
 	@Mapping(target = "summary", ignore = true)
 	Link of(LinkInfo linkInfo);
 
-	LinkInfo of(Link link);
+	LinkInfo toLinkInfo(Link link);
 
 	LinkResult toLinkResult(Link link);
 

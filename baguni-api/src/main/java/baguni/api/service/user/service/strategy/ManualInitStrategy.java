@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
+import baguni.infra.infrastructure.link.dto.LinkResult;
 import baguni.infra.infrastructure.user.dto.UserInfo;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -38,14 +39,15 @@ public class ManualInitStrategy implements ContentInitStrategy {
 	@Override
 	public void initContent(UserInfo info, Long folderId) {
 		for (var url : MANUAL_URLS) {
-			LinkInfo linkInfo = null;
+			LinkResult linkInfo = null;
 			try {
 				linkInfo = linkService.getLinkInfo(url);
 			} catch (Exception e) {
 				linkInfo = linkService.saveLink(url); // url 외에 다른 필드는 모두 빈 문자열인 Link 생성
 			}
 			var command = new PickCommand.Create(
-				info.id(), linkInfo.title(), new ArrayList<>(), folderId, linkInfo
+				info.id(), linkInfo.title(), new ArrayList<>(), folderId,
+				new LinkInfo(linkInfo.url(), linkInfo.title(), linkInfo.description(), linkInfo.imageUrl())
 			);
 			pickService.saveNewPick(command);
 		}
