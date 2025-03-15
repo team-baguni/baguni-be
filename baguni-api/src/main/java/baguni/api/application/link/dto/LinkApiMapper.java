@@ -5,7 +5,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;
 
 import baguni.infra.infrastructure.link.dto.LinkCommand;
-import baguni.infra.infrastructure.link.dto.LinkInfo;
+import baguni.infra.infrastructure.link.dto.LinkResult;
 
 @Mapper(
 	componentModel = "spring",
@@ -14,7 +14,7 @@ import baguni.infra.infrastructure.link.dto.LinkInfo;
 )
 public interface LinkApiMapper {
 
-	LinkApiResponse toLinkResponse(LinkInfo linkInfo);
+	LinkApiResponse toLinkResponse(LinkResult linkInfo);
 
-	LinkCommand.Update toUpdateCommand(Long userId, LinkApiRequest.Update request);
+	LinkCommand.UpdateImage toUpdateCommand(Long userId, LinkApiRequest.Update request);
 }

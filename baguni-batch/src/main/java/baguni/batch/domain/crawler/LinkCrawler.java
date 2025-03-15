@@ -48,6 +48,10 @@ public class LinkCrawler {
 			var content = crawlResult.getTag(Metadata.CONTENT)
 									 .orElse("");
 
+			if (title.isBlank() || description.isBlank() || imageUrl.isBlank() || content.isBlank()) {
+				throw new ServiceException(LinkErrorCode.LINK_CRAWLING_FAILURE, "필수 필드 획득 실패");
+			}
+
 			return LinkCrawlResult
 				.builder()
 				.title(title)
@@ -58,7 +62,7 @@ public class LinkCrawler {
 
 		} catch (SeleniumException e) {
 			log.error(e.getMessage(), e);
-			throw new ServiceException(LinkErrorCode.LINK_ANALYZE_FAILURE);
+			throw new ServiceException(LinkErrorCode.LINK_CRAWLING_FAILURE, "셀레니움 에러");
 		}
 	}
 

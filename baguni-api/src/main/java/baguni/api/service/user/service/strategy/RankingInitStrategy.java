@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import baguni.api.service.ranking.service.RankingService;
+import baguni.infra.infrastructure.link.dto.LinkResult;
 import baguni.infra.infrastructure.user.dto.UserInfo;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -52,7 +53,7 @@ public class RankingInitStrategy implements ContentInitStrategy {
 		var reverseItr = rankingList.listIterator(rankingList.size());
 		while (reverseItr.hasPrevious()) {
 			var curr = reverseItr.previous();
-			LinkInfo linkInfo = null;
+			LinkResult linkInfo = null;
 			try {
 				linkInfo = linkService.getLinkInfo(curr.url());
 			} catch (Exception e) {
@@ -62,7 +63,8 @@ public class RankingInitStrategy implements ContentInitStrategy {
 				continue;
 			}
 			var command = new PickCommand.Create(
-				userId, linkInfo.title(), new ArrayList<>(), destinationFolderId, linkInfo
+				userId, linkInfo.title(), new ArrayList<>(), destinationFolderId,
+				new LinkInfo(linkInfo.url(), linkInfo.title(), linkInfo.description(), linkInfo.imageUrl())
 			);
 			pickService.saveNewPick(command);
 		}

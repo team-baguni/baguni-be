@@ -23,14 +23,22 @@ class ArticleAnalyzerTest {
 	ArticleAnalyzer articleAnalyzer;
 
 	@Test
+	void summarize_and_categorize() {
+		var content = BlogExamples.AWS_REINVENT;
+		var summary = articleAnalyzer.summarize(content);
+		var categories = articleAnalyzer.categorize(summary);
+		log.info("\n요약:\n{}\n--------------\n카테고리 {}개\n{}", summary, categories.size(), categories);
+	}
+
+	@Test
 	void summarize() {
 		var result = articleAnalyzer.summarize(BlogExamples.AWS_REINVENT);
-		log.info("{}", result);
+		log.info("--------------------\n{}", result);
 	}
 
 	@Test
 	void categorize() {
-		var result = articleAnalyzer.categorize("");
-		log.info("{}", result);
+		var result = articleAnalyzer.categorize(BlogExamples.AWS_REINVENT_SUMMARY);
+		log.info("size:{}\n{}", result.size(), result);
 	}
 }

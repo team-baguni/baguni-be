@@ -9,8 +9,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import baguni.api.application.link.dto.LinkApiRequest;
-import baguni.infra.infrastructure.link.dto.LinkCommand;
-import baguni.infra.infrastructure.link.dto.LinkInfo;
+import baguni.infra.infrastructure.link.dto.LinkResult;
 import baguni.security.annotation.LoginUserId;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -39,7 +38,7 @@ public class LinkApiController {
 	public ResponseEntity<LinkApiResponse> getLinkData(
 		@Parameter(description = "og 태그 데이터 가져올 url") @RequestParam String url
 	) {
-		LinkInfo linkInfo = linkService.getLinkInfo(url);
+		LinkResult linkInfo = linkService.getLinkInfo(url);
 		var response = linkApiMapper.toLinkResponse(linkInfo);
 		return ResponseEntity.ok(response);
 	}
