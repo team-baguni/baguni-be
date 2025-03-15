@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import baguni.common.lib.cache.CacheType;
 import baguni.infra.infrastructure.link.dto.BlogLinkInfo;
 import baguni.infra.infrastructure.link.dto.LinkCommand;
+import baguni.infra.infrastructure.link.dto.LinkResult;
 import baguni.infra.model.link.Link;
 import io.opentelemetry.instrumentation.annotations.WithSpan;
 import lombok.RequiredArgsConstructor;
@@ -26,28 +27,26 @@ public class LinkService {
 	private final LinkMapper linkMapper;
 
 	@WithSpan
-	@Transactional(readOnly = true)
-	public LinkInfo getLinkInfo(String url) {
-		Link link = linkDataHandler.getLink(url);
-		return linkMapper.of(link);
+	public LinkResult getLinkInfo(String url) {
+		return linkDataHandler.getLink(url);
 	}
 
 	@WithSpan
 	@Transactional(readOnly = true)
 	public List<LinkInfo> getLinkInfoList(List<String> urlList) {
-		return linkDataHandler.getLinkList(urlList).stream().map(linkMapper::of).toList();
+		return linkDataHandler.getLinkList(urlList).stream().map(linkMapper::toLinkInfo).toList();
 	}
 
 	@WithSpan
 	@Transactional
-	public LinkInfo saveLink(String url) {
+	public LinkResult saveLink(String url) {
 		Link link = linkDataHandler.getOptionalLink(url).orElseGet(() -> Link.createLink(url));
-		return linkMapper.of(linkDataHandler.saveLink(link));
+		return linkMapper.toLinkResult(linkDataHandler.saveLink(link));
 	}
 
 	@WithSpan
 	@Transactional
-	public void updateLink(LinkCommand.Update command) {
+	public void updateLink(LinkCommand.UpdateImage command) {
 		linkDataHandler.updateLink(command);
 	}
 
