@@ -62,4 +62,15 @@ public class BlogExamples {
 		Listen to audio narrations
 		Read offline with the Medium app
 		""";
+
+	public static final String AWS_REINVENT_SUMMARY = """
+		AWS re:Invent 2024는 라스베가스의 전통적인 볼거리와 기술 세미나, 네트워킹 기회 등 다양한 즐길 거리를 경험할 수 있는 큰 행사입니다. 이 행사는 단순한 기술 세미나는 아니라, 파티, 분수 쇼, 다양한 공연들 등을 포함하여 다양한 즐길 거리에 대한 체험을 제공합니다. 또한, AWS 자격증 소지자들을 위한 특별한 공간인 AWS Certification Lounge도 운영되고 있습니다. 라스베가스의 다양한 볼거리와 즐길 거리를 경험하며, 바쁜 하루를 보낸 후에는 다양한 볼거리와 공연들로 여름을 즐기실 수 있을 것입니다.
+		""";
+
+	public static final String LINE_WORKSHOP_SUMMARY = """
+		LY Corporation과 LY Corporation Group(LINE Plus, LINE Taiwan and LINE Vietnam)의 기술과 개발 문화를 알립니다.
+		강형민은 LINE+ UIT 조직에서 프런트엔드 개발을 하고 있으며, 매년 'Front-end Global Workshop'을 개최하고 있습니다.
+		이 행사는 한국과 일본, 태국, 대만, 베트남 등 여러 나라의 엔지니어들이 함께 참가하여 기술 공유와 네트워킹을 하는 행사입니다.
+		강형민은 2024년의 행사에 다녀왔고, 이번 글에서는 행사 참가자 입장에서 Front-end Global Workshop 2024의 후기를 전해 드리려고 합니다.
+		""";
 }
