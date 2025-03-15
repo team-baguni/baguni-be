@@ -53,12 +53,12 @@ public class LinkService {
 	}
 
 	/**
-	 * 이전 요약 작업이 끝나고, 30분 대기 후 다음 작업 실행
+	 * 이전 작업 종료 후 5초마다 1번씩 실행
 	 */
-	@Scheduled(fixedDelay = 30, timeUnit = TimeUnit.MINUTES)
+	@Scheduled(fixedDelay = 5, timeUnit = TimeUnit.SECONDS)
 	public void analyzeSummaryAndUpdate() {
-		log.info("Scheduled: 요약 작업을 시작");
 		for (var link : linkDataHandler.getLinksForSummary()) {
+			log.info("Scheduled: 요약 작업 시작 url={}", link.url());
 			linkDataHandler.updateLink(
 				new LinkCommand.UpdateSummary(
 					link.url(),
@@ -69,12 +69,12 @@ public class LinkService {
 	}
 
 	/**
-	 * 이전 카테고리 작업이 끝나고, 30분 대기 후 다음 작업 실행
+	 * 이전 작업 종료 후 5초마다 1번씩 실행
 	 */
-	@Scheduled(fixedDelay = 30, timeUnit = TimeUnit.MINUTES)
+	@Scheduled(fixedDelay = 5, timeUnit = TimeUnit.SECONDS)
 	public void analyzeCategoriesAndUpdate() {
-		log.info("Scheduled: 카테고리 분류 작업을 시작");
 		for (var link : linkDataHandler.getLinksForCategories()) {
+			log.info("Scheduled: 카테고리 작업 시작 url={}", link.url());
 			linkDataHandler.updateLink(
 				new LinkCommand.UpdateCategories(
 					link.url(),

@@ -76,8 +76,6 @@ public class Link {
 		return Link
 			.builder()
 			.url(url)
-			.title("")
-			.description("")
 			.isRss(false)
 			.build();
 	}
@@ -87,7 +85,6 @@ public class Link {
 			.builder()
 			.url(url)
 			.title(title)
-			.description("")
 			.isRss(false)
 			.build();
 	}
@@ -105,7 +102,6 @@ public class Link {
 			.builder()
 			.url(url)
 			.title(title)
-			.description("")
 			.publishedAt(publishedAt)
 			.isRss(true)
 			.build();
