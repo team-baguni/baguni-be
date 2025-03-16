@@ -35,6 +35,7 @@ public class SeleniumCrawler {
 	 */
 	public Map<String, String> crawl(URI uri) throws SeleniumException {
 		Map<String, String> result = new HashMap<>();
+		StringBuilder content = new StringBuilder(); // 본문
 
 		// 1. WebDriver 설정
 		// WebDriverManager 사용 시, 별도의 드라이버 설치 및 경로 지정 없이 자동 세팅
@@ -96,10 +97,7 @@ public class SeleniumCrawler {
 					result.put(nameAttr, value);
 				}
 			}
-
-			StringBuilder content = new StringBuilder(); // 본문
 			getContent(driver, content);
-			result.put("content", content.toString());
 		} catch (org.openqa.selenium.TimeoutException e) {
 			log.error("Selenium TimeoutException 발생 : {}, url : {}", e.getMessage(), uri);
 		} catch (StaleElementReferenceException e) {
@@ -108,6 +106,7 @@ public class SeleniumCrawler {
 			throw new SeleniumException("Selenium 예외 발생, url : " + uri, e);
 		} finally {
 			// 5. 리소스 해제
+			result.put("content", content.toString());
 			driver.quit();
 		}
 
