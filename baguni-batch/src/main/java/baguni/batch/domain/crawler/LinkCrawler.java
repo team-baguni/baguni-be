@@ -52,7 +52,9 @@ public class LinkCrawler {
 				throw new ServiceException(LinkErrorCode.LINK_CRAWLING_FAILURE, "필수 필드 획득 실패, url : " + url);
 			}
 
-			if (content.length() > 65535) {
+			// text 필드의 최대 크기는 65535 byte, varchar와 다르게 최대 65535자가 아님.
+			// 즉, 한글은 한 글자에 4byte(utf8mb4)이므로, 65535 / 4 = 16383.75
+			if (content.length() > 16000) {
 				log.error("text 필드보다 큰 content 길이 : {}, url : {}", content.length(), url);
 			}
 
