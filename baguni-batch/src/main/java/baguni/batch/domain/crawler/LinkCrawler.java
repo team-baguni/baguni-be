@@ -49,7 +49,7 @@ public class LinkCrawler {
 									 .orElse("");
 
 			if (title.isBlank() || imageUrl.isBlank() || content.isBlank()) {
-				throw new ServiceException(LinkErrorCode.LINK_CRAWLING_FAILURE, "필수 필드 획득 실패");
+				throw new ServiceException(LinkErrorCode.LINK_CRAWLING_FAILURE, "필수 필드 획득 실패, url : " + url);
 			}
 
 			if (content.length() > 65535) {
@@ -66,7 +66,7 @@ public class LinkCrawler {
 
 		} catch (SeleniumException e) {
 			log.error(e.getMessage(), e);
-			throw new ServiceException(LinkErrorCode.LINK_CRAWLING_FAILURE, "셀레니움 에러");
+			throw new ServiceException(LinkErrorCode.LINK_CRAWLING_FAILURE, "셀레니움 에러, url : " + url);
 		}
 	}
 

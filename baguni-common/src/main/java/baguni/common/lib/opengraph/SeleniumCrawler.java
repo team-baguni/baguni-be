@@ -105,7 +105,7 @@ public class SeleniumCrawler {
 		} catch (StaleElementReferenceException e) {
 			log.info("해당 html 태그가 없음 : {}", e.getMessage());
 		} catch (Exception e) {
-			throw new SeleniumException("Error occurred when reading OG tags via Selenium, url : " + uri, e);
+			throw new SeleniumException("Selenium 예외 발생, url : " + uri, e);
 		} finally {
 			// 5. 리소스 해제
 			driver.quit();
