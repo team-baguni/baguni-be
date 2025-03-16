@@ -53,34 +53,42 @@ public class LinkService {
 	}
 
 	/**
-	 * 이전 작업 종료 후 5초마다 1번씩 실행
+	 * 이전 작업 종료 후 1분마다 1번씩 실행
 	 */
-	@Scheduled(fixedDelay = 5, timeUnit = TimeUnit.SECONDS)
+	@Scheduled(fixedDelay = 1, timeUnit = TimeUnit.MINUTES)
 	public void analyzeSummaryAndUpdate() {
 		for (var link : linkDataHandler.getLinksForSummary()) {
-			log.info("Scheduled: 요약 작업 시작 url={}", link.url());
-			linkDataHandler.updateLink(
-				new LinkCommand.UpdateSummary(
-					link.url(),
-					articleAnalyzer.summarize(link.content())
-				)
-			);
+			try {
+				log.info("요약 시작: {}", link.url());
+				linkDataHandler.updateLink(
+					new LinkCommand.UpdateSummary(
+						link.url(),
+						articleAnalyzer.summarize(link.content())
+					)
+				);
+			} catch (Exception e) {
+				log.error("요약 실패: {}", link.url(), e);
+			}
 		}
 	}
 
 	/**
-	 * 이전 작업 종료 후 5초마다 1번씩 실행
+	 * 이전 작업 종료 후 1분마다 1번씩 실행
 	 */
-	@Scheduled(fixedDelay = 5, timeUnit = TimeUnit.SECONDS)
+	@Scheduled(fixedDelay = 1, timeUnit = TimeUnit.MINUTES)
 	public void analyzeCategoriesAndUpdate() {
 		for (var link : linkDataHandler.getLinksForCategories()) {
-			log.info("Scheduled: 카테고리 작업 시작 url={}", link.url());
-			linkDataHandler.updateLink(
-				new LinkCommand.UpdateCategories(
-					link.url(),
-					articleAnalyzer.categorize(link.summary())
-				)
-			);
+			try {
+				log.info("카테고리 추출 시작: {}", link.url());
+				linkDataHandler.updateLink(
+					new LinkCommand.UpdateCategories(
+						link.url(),
+						articleAnalyzer.categorize(link.summary())
+					)
+				);
+			} catch (Exception e) {
+				log.error("카테고리 추출 실패: {}", link.url(), e);
+			}
 		}
 	}
 }
