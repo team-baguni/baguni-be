@@ -52,6 +52,10 @@ public class LinkCrawler {
 				throw new ServiceException(LinkErrorCode.LINK_CRAWLING_FAILURE, "필수 필드 획득 실패");
 			}
 
+			if (content.length() > 65535) {
+				log.error("text 필드보다 큰 content 길이 : {}, url : {}", content.length(), url);
+			}
+
 			return LinkCrawlResult
 				.builder()
 				.title(title)
