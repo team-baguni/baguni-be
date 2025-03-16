@@ -48,7 +48,7 @@ public class LinkCrawler {
 			var content = crawlResult.getTag(Metadata.CONTENT)
 									 .orElse("");
 
-			if (title.isBlank() || description.isBlank() || imageUrl.isBlank() || content.isBlank()) {
+			if (title.isBlank() || imageUrl.isBlank() || content.isBlank()) {
 				throw new ServiceException(LinkErrorCode.LINK_CRAWLING_FAILURE, "필수 필드 획득 실패");
 			}
 
