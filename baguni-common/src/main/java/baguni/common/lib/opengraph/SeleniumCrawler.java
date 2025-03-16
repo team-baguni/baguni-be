@@ -97,11 +97,25 @@ public class SeleniumCrawler {
 					result.put(nameAttr, value);
 				}
 			}
-			getContent(driver, content);
+			// 본문 데이터 크롤링 (3회 재시도)
+			int retryCount = 0;
+			int maxRetries = 3;
+			while (true) {
+				try {
+					content = new StringBuilder();
+					getContent(driver, content);
+					break; // 성공 시 break
+				} catch (StaleElementReferenceException e) {
+					if (++retryCount >= maxRetries) {
+						throw e;
+					}
+				}
+				Thread.sleep(500);
+			}
 		} catch (org.openqa.selenium.TimeoutException e) {
 			log.error("Selenium TimeoutException 발생 : {}, url : {}", e.getMessage(), uri);
-		} catch (StaleElementReferenceException e) {
-			log.error("해당 html 태그가 없음 : {}", e.getMessage(), e);
+		} catch (StaleElementReferenceException e) { // 요소가 더 이상 DOM에 존재하지 않거나 업데이트된 경우에 발생하는 오류
+			log.error("DOM 요소가 존재하지 않거나 업데이트 된 상태 : {}", e.getMessage(), e);
 		} catch (Exception e) {
 			throw new SeleniumException("Selenium 예외 발생, url : " + uri, e);
 		} finally {
