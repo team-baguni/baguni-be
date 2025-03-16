@@ -26,7 +26,7 @@ public class LinkErrorCode extends ErrorCode {
 		"LI-004", HttpStatus.URI_TOO_LONG, "저장 가능한 URL 길이 초과 [< 2048]", ErrorLevel.CAN_HAPPEN()
 	);
 	public static final ErrorCode LINK_CRAWLING_FAILURE = new LinkErrorCode(
-		"LI-005", HttpStatus.INTERNAL_SERVER_ERROR, "링크 크롤링에 실패했습니다", ErrorLevel.SHOULD_NOT_HAPPEN()
+		"LI-005", HttpStatus.INTERNAL_SERVER_ERROR, "링크 크롤링에 실패했습니다", ErrorLevel.MUST_NEVER_HAPPEN()
 	);
 	public static final ErrorCode LINK_IMAGE_NOT_FOUND = new LinkErrorCode(
 		"LI-006", HttpStatus.NOT_FOUND, "존재하지 않는 이미지 링크", ErrorLevel.SHOULD_NOT_HAPPEN()
