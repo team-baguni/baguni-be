@@ -20,6 +20,7 @@ public class OllamaApiConfig {
 	private static final Duration CONNECTION_TIMEOUT = Duration.ofSeconds(60 * 5);
 	private static final Duration READ_TIMEOUT = Duration.ofSeconds(60 * 5);
 	private static final String OLLAMA_SERVER_URL = "http://ollama:11434";
+	private static final String OLLAMA_LOCAL_URL = "http://localhost:11434"; // local에서 docker로 띄운 llama 사용 시 필요
 
 	@Bean
 	public OllamaApi ollamaApi(RestClient.Builder restClientBuilder) {

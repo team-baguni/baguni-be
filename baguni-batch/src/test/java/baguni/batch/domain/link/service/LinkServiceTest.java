@@ -26,7 +26,7 @@ class LinkServiceTest {
 	@DisplayName("링크 분석 후 결과를 DB에 잘 저장하는지 테스트")
 	public void test() {
 		var url = "https://techblog.lycorp.co.jp/ko/2024-frontend-global-workshop-recap";
-		linkService.analyzeAndUpdateLink(url);
+		linkService.updateLink(url);
 	}
 
 }
