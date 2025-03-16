@@ -1,14 +1,11 @@
 package baguni.batch.domain.link.service;
 
-import java.util.StringTokenizer;
 import java.util.concurrent.TimeUnit;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
-import baguni.batch.domain.analyzer.ArticleAnalyzer;
+import baguni.batch.domain.analyzer.AiArticleAnalyzer;
 import baguni.batch.domain.crawler.LinkCrawler;
 import baguni.infra.infrastructure.link.dto.LinkCommand;
 import baguni.infra.infrastructure.link.LinkDataHandler;
@@ -23,14 +20,7 @@ public class LinkService {
 
 	private final LinkDataHandler linkDataHandler;
 	private final LinkCrawler linkCrawler;
-
-	private ArticleAnalyzer articleAnalyzer;
-
-	@Autowired
-	@Qualifier("local-ollama3.2-korean")
-	public void setArticleAnalyzer(ArticleAnalyzer articleAnalyzer) {
-		this.articleAnalyzer = articleAnalyzer;
-	}
+	private final AiArticleAnalyzer articleAnalyzer;
 
 	@WithSpan
 	public void updateLink(String url) {
@@ -58,7 +48,7 @@ public class LinkService {
 	/**
 	 * 이전 작업 종료 후 1분마다 1번씩 실행
 	 */
-	@Scheduled(fixedDelay = 1, timeUnit = TimeUnit.MINUTES)
+	@Scheduled(fixedDelay = 5, timeUnit = TimeUnit.MINUTES)
 	public void analyzeSummaryAndUpdate() {
 		for (var link : linkDataHandler.getLinksForSummary()) {
 			try {
@@ -69,9 +59,9 @@ public class LinkService {
 						articleAnalyzer.summarize(link.content())
 					)
 				);
-				log.info("요약 성공: {} Token 수: {}", link.url(), getTokenCount(link.content()));
+				log.info("요약 성공: {} 글자수: {}", link.url(), getCharacterCount(link.content()));
 			} catch (Exception e) {
-				log.error("요약 실패: {} Token 수: {}", link.url(), getTokenCount(link.content()), e);
+				log.error("요약 실패: {} 글자수: {}", link.url(), getCharacterCount(link.content()), e);
 			}
 		}
 	}
@@ -79,7 +69,7 @@ public class LinkService {
 	/**
 	 * 이전 작업 종료 후 1분마다 1번씩 실행
 	 */
-	@Scheduled(fixedDelay = 1, timeUnit = TimeUnit.MINUTES)
+	@Scheduled(fixedDelay = 5, timeUnit = TimeUnit.MINUTES)
 	public void analyzeCategoriesAndUpdate() {
 		for (var link : linkDataHandler.getLinksForCategories()) {
 			try {
@@ -90,14 +80,14 @@ public class LinkService {
 						articleAnalyzer.categorize(link.summary())
 					)
 				);
-				log.info("카테고리 추출 성공: {} Token 수: {}", link.url(), getTokenCount(link.content()));
+				log.info("카테고리 추출 성공: {} 글자수: {}", link.url(), getCharacterCount(link.content()));
 			} catch (Exception e) {
-				log.error("카테고리 추출 실패: {} Token 수: {}", link.url(), getTokenCount(link.content()), e);
+				log.error("카테고리 추출 실패: {} 글자수: {}", link.url(), getCharacterCount(link.content()), e);
 			}
 		}
 	}
 
-	private int getTokenCount(String data) {
-		return new StringTokenizer(data).countTokens();
+	private int getCharacterCount(String data) {
+		return data.codePointCount(0, data.length());
 	}
 }
