@@ -38,6 +38,8 @@ public class LinkService {
 
 		if (link.getDaysPassed() < 90)
 			return;
+
+		// TODO: 요약 끝나고 삭제해야 함. 그렇지 않으면, 개발 블로그만 링크 업데이트됨.
 		if (!link.isBlogFeed())
 			return;
 
