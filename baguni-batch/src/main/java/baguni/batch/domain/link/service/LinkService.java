@@ -1,5 +1,6 @@
 package baguni.batch.domain.link.service;
 
+import java.util.StringTokenizer;
 import java.util.concurrent.TimeUnit;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -66,8 +67,9 @@ public class LinkService {
 						articleAnalyzer.summarize(link.content())
 					)
 				);
+				log.info("요약 성공: {} Token 수: {}", link.url(), getTokenCount(link.content()));
 			} catch (Exception e) {
-				log.error("요약 실패: {}", link.url(), e);
+				log.error("요약 실패: {} Token 수: {}", link.url(), getTokenCount(link.content()), e);
 			}
 		}
 	}
@@ -86,9 +88,14 @@ public class LinkService {
 						articleAnalyzer.categorize(link.summary())
 					)
 				);
+				log.info("카테고리 추출 성공: {} Token 수: {}", link.url(), getTokenCount(link.content()));
 			} catch (Exception e) {
-				log.error("카테고리 추출 실패: {}", link.url(), e);
+				log.error("카테고리 추출 실패: {} Token 수: {}", link.url(), getTokenCount(link.content()), e);
 			}
 		}
+	}
+
+	private int getTokenCount(String data) {
+		return new StringTokenizer(data).countTokens();
 	}
 }
