@@ -49,7 +49,7 @@ public class LinkCrawler {
 									 .orElse("");
 
 			if (title.isBlank() || imageUrl.isBlank() || content.isBlank()) {
-				throw new ServiceException(LinkErrorCode.LINK_CRAWLING_FAILURE, "필수 필드 획득 실패");
+				throw new ServiceException(LinkErrorCode.LINK_CRAWLING_FAILURE, "필수 필드 획득 실패, url : {}" + url);
 			}
 
 			if (content.length() > 65535) {
