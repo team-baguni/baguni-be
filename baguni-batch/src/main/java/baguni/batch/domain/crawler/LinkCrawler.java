@@ -37,18 +37,24 @@ public class LinkCrawler {
 								   .orElse(crawlResult.getTag(Metadata.OG_TITLE)
 													  .orElse(""));
 
-			var description = crawlResult.getTag(Metadata.DESCRIPTION)
-										 .orElse(crawlResult.getTag(Metadata.OG_DESCRIPTION)
-															.orElse(""));
+			// 토스 글 중에 description에는 공백이 들어 있으므로, 더 긴 description 사용
+			// 참고 : https://toss.tech/article/32197
+			var desc = crawlResult.getTag(Metadata.DESCRIPTION).orElse("");
+			var ogDesc = crawlResult.getTag(Metadata.OG_DESCRIPTION).orElse("");
+			var description = (desc.length() >= ogDesc.length()) ? desc : ogDesc;
 
 			var imageUrl = correctImageUrl(url, crawlResult.getTag(Metadata.OG_IMAGE)
 														   .orElse(crawlResult.getTag(Metadata.IMAGE)
 																			  .orElse(crawlResult.getTag(Metadata.ICON)
 																								 .orElse(""))));
-			var content = crawlResult.getTag(Metadata.CONTENT)
-									 .orElse("");
 
-			if (title.isBlank() || imageUrl.isBlank() || content.isBlank()) {
+			// 토스 글 중에 p 태그가 없는 경우가 있어 content에 공백이 설정됨. -> description에 유효한 데이터가 있으므로 공백인 경우 사용
+			// 참고 : https://toss.tech/article/32197
+			var content = crawlResult.getTag(Metadata.CONTENT)
+									 .filter(c -> !c.isBlank())
+									 .orElse(description);
+
+			if (title.isBlank() || imageUrl.isBlank()) {
 				throw new ServiceException(LinkErrorCode.LINK_CRAWLING_FAILURE, "필수 필드 획득 실패, url : " + url);
 			}
 
