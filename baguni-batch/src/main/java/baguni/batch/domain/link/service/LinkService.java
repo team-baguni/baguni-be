@@ -49,14 +49,18 @@ public class LinkService {
 
 	/**
 	 * (1) 기존 구현 버전
-	 *     - 이전 작업 종료 후 30분마다 1번씩 실행
+	 *     이전 작업 종료 후 30분마다 1번씩 실행한다.
 	 *     - 실패 단위 == 작업 성격 (카테고리/분석)
+	 *     - 단점 == 로직 전체가 DB 특정 칼럼의 Null 여부에 의존한다.
+	 *       참고: {@link baguni.infra.infrastructure.link.LinkRepository}
 	 */
 	@Scheduled(fixedDelay = 30, timeUnit = TimeUnit.MINUTES)
 	public void analyzeEveryPossibleLink() {
 		analyzeSummaryAndUpdate();
 		analyzeCategoriesAndUpdate();
 	}
+
+	// Internal functions ---------------------------------------------
 
 	/**
 	 * (2) FluentAPI 버전
@@ -79,8 +83,6 @@ public class LinkService {
 				linkDataHandler.updateLink(new LinkCommand.UpdateCategories(link.url(), category));
 			}).onFailure((ex -> log.error("분석 실패 url:{}", link.url(), ex)));
 	}
-
-	// Internal helper functions ------------------------------
 
 	private void analyzeSummaryAndUpdate() {
 		for (var link : linkDataHandler.getLinksForSummary()) {
