@@ -12,7 +12,7 @@ import org.springframework.web.client.RestClient;
 import org.springframework.web.client.support.RestClientAdapter;
 import org.springframework.web.service.invoker.HttpServiceProxyFactory;
 
-import baguni.batch.domain.analyzer.ollama.OllamaApi;
+import baguni.batch.domain.ai.ollama.OllamaApi;
 
 @Configuration
 public class OllamaApiConfig {
