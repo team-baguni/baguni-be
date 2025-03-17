@@ -46,7 +46,7 @@ public class LinkService {
 	}
 
 	/**
-	 * 이전 작업 종료 후 1분마다 1번씩 실행
+	 * 이전 작업 종료 후 5분마다 1번씩 실행
 	 */
 	@Scheduled(fixedDelay = 5, timeUnit = TimeUnit.MINUTES)
 	public void analyzeSummaryAndUpdate() {
@@ -67,7 +67,7 @@ public class LinkService {
 	}
 
 	/**
-	 * 이전 작업 종료 후 1분마다 1번씩 실행
+	 * 이전 작업 종료 후 5분마다 1번씩 실행
 	 */
 	@Scheduled(fixedDelay = 5, timeUnit = TimeUnit.MINUTES)
 	public void analyzeCategoriesAndUpdate() {
