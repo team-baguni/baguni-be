@@ -8,18 +8,18 @@ import java.util.function.Function;
 
 /**
  * 올바른 사용 예제
- * AnalyzePipeline.with("hello")                 // 처리할 데이터
- *                .then(s1 -> s1.toUpperCase())  // HELLO
- *                .andThen(s2 -> s2 + " WORLD")  // HELLO WORLD
- *                .andThen(s3 -> s3 + "~!")      // HELLO WORLD~!
- *                .onFailure(e -> log.error(e))  // ------------
- *                .runPipeline();                // 처리 시작
+ * CreatePipeline.with("hello")                 // 처리할 데이터
+ *               .then(s1 -> s1.toUpperCase())  // HELLO
+ *               .andThen(s2 -> s2 + " WORLD")  // HELLO WORLD
+ *               .andThen(s3 -> s3 + "~!")      // HELLO WORLD~!
+ *               .onFailure(e -> log.error(e))  // ------------
+ *               .runPipeline();                // 처리 시작
  *
  * ❌ 잘못된 사용 예제
- * AnalyzePipeline.with("hello")
- *                .then(s -> s.toUpperCase())
- *                .andThen(s -> s + "~!")
- *                .runPipeline();  // 🔴 onFailure()를 명시하지 않으면 컴파일 오류 발생
+ * CreatePipeline.with("hello")
+ *               .then(s -> s.toUpperCase())
+ *               .andThen(s -> s + "~!")
+ *               .runPipeline();  // 🔴 onFailure()를 명시하지 않으면 컴파일 오류 발생
  */
 public class CreatePipeline {
 
