@@ -115,8 +115,15 @@ public class Link {
 		return this;
 	}
 
+	public Link updateImageUrl(String imageUrl) {
+		this.imageUrl = imageUrl;
+		changeUpdatedAt(LocalDateTime.now());
+		return this;
+	}
+
 	public Link updateContent(String content) {
 		this.content = content;
+		changeUpdatedAt(LocalDateTime.now());
 		return this;
 	}
 
@@ -126,6 +133,7 @@ public class Link {
 			return this;
 		}
 		this.categories = String.join(",", categories);
+		changeUpdatedAt(LocalDateTime.now());
 		return this;
 	}
 

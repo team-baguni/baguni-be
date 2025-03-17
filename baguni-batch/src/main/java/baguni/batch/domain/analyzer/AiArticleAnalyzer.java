@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 
 import baguni.batch.domain.ai.AiAgent;
 import baguni.batch.domain.ai.PromptBuilder;
-import baguni.batch.domain.analyzer.util.SplitText;
+import baguni.batch.lib.SplitText;
 import io.opentelemetry.instrumentation.annotations.WithSpan;
 import lombok.extern.slf4j.Slf4j;
 

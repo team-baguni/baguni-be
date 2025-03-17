@@ -6,7 +6,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import baguni.batch.domain.analyzer.AiArticleAnalyzer;
-import baguni.batch.domain.analyzer.CreatePipeline;
+import baguni.batch.lib.Task;
 import baguni.batch.domain.crawler.LinkCrawler;
 import baguni.infra.infrastructure.link.dto.LinkCommand;
 import baguni.infra.infrastructure.link.LinkDataHandler;
@@ -31,12 +31,11 @@ public class LinkService {
 		if (link.getDaysPassed() < 90)
 			return;
 
-		// TODO: 요약 끝나고 삭제해야 함. 그렇지 않으면, 개발 블로그만 링크 업데이트됨.
-		if (!link.isBlogFeed())
+		if (!link.isBlogFeed()) // 일반 링크는 테스트 후 수행 예정
 			return;
 
 		var crawled = linkCrawler.crawl(url);
-		linkDataHandler.updateLink(
+		var updatedLink = linkDataHandler.updateLink(
 			new LinkCommand.UpdateWithCrawledData(
 				url,
 				crawled.title(),
@@ -45,6 +44,7 @@ public class LinkService {
 				crawled.content()
 			)
 		);
+		// LinkAnalyzeTask(updatedLink).run(); // 분석까지 원큐에 할 경우 주석 해제
 	}
 
 	/**
@@ -61,26 +61,23 @@ public class LinkService {
 	/**
 	 * (2) FluentAPI 버전
 	 *     - 실패 단위 == 링크 1개
-	 *     - 메시지큐를 이용할 경우, 메시지별로 아래 메서드 순차 실행하면 될 듯!
+	 *     - 1. 메시지큐를 이용할 경우, 메시지별로 Task 실행
+	 *          ex. LinkAnalyzeTask(sourceLink).run();
+	 *     - 2. 새 쓰레드에서 처리하고 싶은 경우
+	 *          ex. new Thread( LinkAnalyzeTask(sourceLink) ).start();
 	 */
-	public void analyzeSingleLink(LinkResult link) {
-		CreatePipeline
+	private Runnable LinkAnalyzeTask(LinkResult link) {
+		return new Task()
 			.using(
 				link.content()
-			)
-			.then((content) -> {
+			).then((content) -> {
 				var summary = articleAnalyzer.summarize(content);
 				linkDataHandler.updateLink(new LinkCommand.UpdateSummary(link.url(), summary));
 				return summary;
-			})
-			.andThen((summary) -> {
+			}).andThen((summary) -> {
 				var category = articleAnalyzer.categorize(summary);
 				linkDataHandler.updateLink(new LinkCommand.UpdateCategories(link.url(), category));
-			})
-			.onFailure((exception -> {
-				log.error("분석 실패 url:{}", link.url(), exception);
-			}))
-			.runPipeline();
+			}).onFailure((ex -> log.error("분석 실패 url:{}", link.url(), ex)));
 	}
 
 	// Internal helper functions ------------------------------

@@ -69,38 +69,45 @@ public class LinkDataHandler {
 
 	@WithSpan
 	@Transactional
-	public void updateLink(LinkCommand.UpdateImage command) {
-		List<Link> links = linkRepository.findAllByImageUrl(command.imageUrl());
-		links.forEach(link -> link.updateMetadata(link.getTitle(), link.getDescription(), command.updateImageUrl()));
+	public List<LinkResult> updateLink(LinkCommand.UpdateImage command) {
+		return linkRepository
+			.findAllByImageUrl(command.imageUrl())
+			.stream()
+			.map(li -> li.updateImageUrl(command.imageUrl()))
+			.map(linkMapper::toLinkResult)
+			.toList();
 	}
 
 	@WithSpan
 	@Transactional
-	public void updateLink(LinkCommand.UpdateWithCrawledData command) {
-		linkRepository
+	public LinkResult updateLink(LinkCommand.UpdateWithCrawledData command) {
+		return linkRepository
 			.findByUrl(command.linkUrl())
 			.map(li -> li.updateMetadata(command.title(), command.description(), command.imageUrl()))
 			.map(li -> li.updateContent(command.content()))
-			.map(li -> li.updateSummary(null)) // reset for scheduler
-			.map(li -> li.updateCategories(null)) // reset for scheduler
+			.map(li -> li.updateSummary(null))     // reset for scheduler
+			.map(li -> li.updateCategories(null))  // reset for scheduler
+			.map(linkMapper::toLinkResult)
 			.orElseThrow(() -> new ServiceException(LinkErrorCode.LINK_NOT_FOUND));
 	}
 
 	@WithSpan
 	@Transactional
-	public void updateLink(LinkCommand.UpdateSummary command) {
-		linkRepository
+	public LinkResult updateLink(LinkCommand.UpdateSummary command) {
+		return linkRepository
 			.findByUrl(command.linkUrl())
 			.map(li -> li.updateSummary(command.summary()))
+			.map(linkMapper::toLinkResult)
 			.orElseThrow(() -> new ServiceException(LinkErrorCode.LINK_NOT_FOUND));
 	}
 
 	@WithSpan
 	@Transactional
-	public void updateLink(LinkCommand.UpdateCategories command) {
-		linkRepository
+	public LinkResult updateLink(LinkCommand.UpdateCategories command) {
+		return linkRepository
 			.findByUrl(command.linkUrl())
 			.map(li -> li.updateCategories(command.categories()))
+			.map(linkMapper::toLinkResult)
 			.orElseThrow(() -> new ServiceException(LinkErrorCode.LINK_NOT_FOUND));
 	}
 
