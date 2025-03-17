@@ -1,4 +1,4 @@
-package baguni.batch.domain.analyzer.util;
+package baguni.batch.lib;
 
 import java.util.ArrayList;
 import java.util.List;
