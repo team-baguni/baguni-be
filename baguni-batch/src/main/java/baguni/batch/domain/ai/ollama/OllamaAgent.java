@@ -5,7 +5,7 @@ import org.springframework.stereotype.Component;
 import baguni.batch.domain.ai.AiAgent;
 import lombok.RequiredArgsConstructor;
 
-@Component
+@Component("llama3.2-korean")
 @RequiredArgsConstructor
 public class OllamaAgent implements AiAgent {
 
@@ -15,7 +15,7 @@ public class OllamaAgent implements AiAgent {
 	@Override
 	public String ask(String prompt) {
 		return ollamaApi
-			.sendRequest(LlamaRequest
+			.sendRequest(OllamaRequest
 				.builder()
 				.model(MODEL)
 				.stream(false)

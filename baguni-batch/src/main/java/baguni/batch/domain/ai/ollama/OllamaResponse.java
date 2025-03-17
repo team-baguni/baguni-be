@@ -1,6 +1,6 @@
 package baguni.batch.domain.ai.ollama;
 
-public record LlamaResponse(
+public record OllamaResponse(
 	String model,
 	String createdAt,
 	String response
