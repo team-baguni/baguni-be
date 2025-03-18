@@ -1,6 +1,7 @@
 package baguni.batch.domain.ai.ollama;
 
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.ResourceAccessException;
 
 import baguni.batch.domain.ai.AiAgent;
 import lombok.RequiredArgsConstructor;
@@ -18,15 +19,22 @@ public class OllamaAgent implements AiAgent {
 	public String ask(String prompt) {
 		long start = System.currentTimeMillis();
 		log.info("Ollama length: {}, prompt: {}", prompt.length(), prompt);
+		String response;
 
-		String response = ollamaApi
-			.sendRequest(OllamaRequest
-				.builder()
-				.model(MODEL)
-				.stream(false)
-				.prompt(prompt)
-				.build()
-			).response();
+		try {
+			response = ollamaApi
+				.sendRequest(OllamaRequest
+					.builder()
+					.model(MODEL)
+					.stream(false)
+					.prompt(prompt)
+					.build()
+				).response();
+		} catch (ResourceAccessException e) {
+			log.error("Ollama 타임 아웃 발생, 내용 : {} {}", prompt, e.getMessage());
+			throw e;
+		}
+
 		long end = System.currentTimeMillis();
 		log.info("Ollama 응답 시간 : {} ms", end - start);
 		return response;
