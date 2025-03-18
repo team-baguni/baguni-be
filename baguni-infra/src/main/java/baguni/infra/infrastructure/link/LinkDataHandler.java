@@ -23,6 +23,7 @@ import lombok.RequiredArgsConstructor;
 @Component
 @RequiredArgsConstructor
 public class LinkDataHandler {
+
 	private final LinkRepository linkRepository;
 	private final LinkStatsRepository linkStatsRepository;
 	private final LinkMapper linkMapper;
