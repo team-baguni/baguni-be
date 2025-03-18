@@ -30,4 +30,10 @@ public class LinkCommand {
 		List<String> categories
 	) {
 	}
+
+	public record UpdateIsValid(
+		String linkUrl,
+		Boolean isValid
+	) {
+	}
 }

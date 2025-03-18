@@ -55,6 +55,10 @@ public class Link {
 	@ColumnDefault("false")
 	private Boolean isRss;
 
+	@Column(name = "is_valid", nullable = false)
+	@ColumnDefault("true")
+	private Boolean isValid;
+
 	@Column(name = "content", columnDefinition = "TEXT")
 	private String content;
 
@@ -147,6 +151,11 @@ public class Link {
 		return this.isRss;
 	}
 
+	public Link updateIsValid(Boolean isValid) {
+		this.isValid = isValid;
+		return this;
+	}
+
 	public Link changeUpdatedAt(LocalDateTime updatedAt) {
 		this.updatedAt = updatedAt;
 		return this;
@@ -157,7 +166,7 @@ public class Link {
 	@Builder
 	private Link(
 		String url, String title, String description, String summary,
-		String imageUrl, Boolean isRss, LocalDateTime publishedAt
+		String imageUrl, Boolean isRss, Boolean isValid, LocalDateTime publishedAt
 	) {
 		if (2048 < url.length()) {
 			throw new ServiceException(LinkErrorCode.LINK_URL_TOO_LONG);
@@ -168,6 +177,7 @@ public class Link {
 		this.summary = summary;
 		this.imageUrl = imageUrl;
 		this.isRss = isRss;
+		this.isValid = isValid;
 		this.publishedAt = publishedAt;
 		this.createdAt = LocalDateTime.now();
 		this.updatedAt = this.createdAt;

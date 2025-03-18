@@ -113,6 +113,16 @@ public class LinkDataHandler {
 	}
 
 	@WithSpan
+	@Transactional
+	public LinkResult updateLink(LinkCommand.UpdateIsValid command) {
+		return linkRepository
+			.findByUrl(command.linkUrl())
+			.map(li -> li.updateIsValid(command.isValid()))
+			.map(linkMapper::toLinkResult)
+			.orElseThrow(() -> new ServiceException(LinkErrorCode.LINK_NOT_FOUND));
+	}
+
+	@WithSpan
 	@Transactional(readOnly = true)
 	public boolean existsByUrl(String url) {
 		return linkRepository.existsByUrl(url);
