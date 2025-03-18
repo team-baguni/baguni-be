@@ -110,7 +110,7 @@ public class LinkService {
 		try {
 			linkApi.checkUrl(URI.create(imageUrl));
 		} catch (ResourceAccessException e) {
-			log.info("image_url 타임 아웃 발생 url : {}, {},", imageUrl, e.getMessage());
+			log.info("image_url 타임 아웃 발생, url : {}, {},", imageUrl, e.getMessage());
 			return false;
 		}
 		return true;

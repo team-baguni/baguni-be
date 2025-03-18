@@ -81,6 +81,7 @@ public class Link {
 			.builder()
 			.url(url)
 			.isRss(false)
+			.isValid(true)
 			.build();
 	}
 
@@ -90,6 +91,7 @@ public class Link {
 			.url(url)
 			.title(title)
 			.isRss(false)
+			.isValid(true)
 			.build();
 	}
 
@@ -108,6 +110,7 @@ public class Link {
 			.title(title)
 			.publishedAt(publishedAt)
 			.isRss(true)
+			.isValid(true)
 			.build();
 	}
 
