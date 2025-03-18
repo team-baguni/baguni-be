@@ -1,15 +1,21 @@
 package baguni.batch.domain.link.service;
 
+import java.net.URI;
 import java.util.StringTokenizer;
 import java.util.concurrent.TimeUnit;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.ResourceAccessException;
 
 import baguni.batch.domain.analyzer.ArticleAnalyzer;
 import baguni.batch.domain.crawler.LinkCrawler;
+import baguni.batch.domain.link.util.LinkApi;
+import baguni.common.event.EventMessenger;
+import baguni.common.event.LinkCheckEvent;
 import baguni.infra.infrastructure.link.dto.LinkCommand;
 import baguni.infra.infrastructure.link.LinkDataHandler;
 import io.opentelemetry.instrumentation.annotations.WithSpan;
@@ -23,8 +29,13 @@ public class LinkService {
 
 	private final LinkDataHandler linkDataHandler;
 	private final LinkCrawler linkCrawler;
+	private final LinkApi linkApi;
+	private final EventMessenger eventMessenger;
 
 	private ArticleAnalyzer articleAnalyzer;
+
+	@Value("${basic.image-url}")
+	private String basicImageUrl;
 
 	@Autowired
 	@Qualifier("local-ollama3.2-korean")
@@ -53,6 +64,17 @@ public class LinkService {
 				crawled.content()
 			)
 		);
+		eventMessenger.send(new LinkCheckEvent(crawled.imageUrl())); // image_url 검사
+	}
+
+	@WithSpan
+	public void updateImageUrl(String imageUrl) {
+		try {
+			linkApi.checkImageUrl(URI.create(imageUrl));
+		} catch (ResourceAccessException e) {
+			log.info("image_url 타임 아웃 발생 url : {}, {},", imageUrl, e.getMessage());
+			linkDataHandler.updateLink(new LinkCommand.UpdateImage(imageUrl, basicImageUrl)); // 타임아웃 발생 시 접근할 수 없는 링크
+		}
 	}
 
 	/**
