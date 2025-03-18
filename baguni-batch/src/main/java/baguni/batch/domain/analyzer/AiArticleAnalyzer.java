@@ -31,7 +31,7 @@ public class AiArticleAnalyzer implements ArticleAnalyzer {
 	@Override
 	public String summarize(String content) {
 		return new SplitText(content)
-			.byCharacterCount(400, 4).stream()
+			.byCharacterCount(1000, 4).stream()
 			.map(subText -> aiAgent.ask(PromptBuilder.summarize(subText)))
 			.collect(Collectors.joining());
 	}
