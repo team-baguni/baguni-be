@@ -16,9 +16,10 @@ public class OllamaAgent implements AiAgent {
 
 	@Override
 	public String ask(String prompt) {
-		log.info("length: {}, prompt: {}", prompt.length(), prompt);
+		long start = System.currentTimeMillis();
+		log.info("Ollama length: {}, prompt: {}", prompt.length(), prompt);
 
-		return ollamaApi
+		String response = ollamaApi
 			.sendRequest(OllamaRequest
 				.builder()
 				.model(MODEL)
@@ -26,5 +27,8 @@ public class OllamaAgent implements AiAgent {
 				.prompt(prompt)
 				.build()
 			).response();
+		long end = System.currentTimeMillis();
+		log.info("Ollama 응답 시간 : {} ms", end - start);
+		return response;
 	}
 }
