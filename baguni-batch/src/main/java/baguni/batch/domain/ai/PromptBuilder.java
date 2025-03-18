@@ -4,7 +4,7 @@ public class PromptBuilder {
 
 	public static String summarize(String text) {
 		return String.format("""
-				내용을 최대 400자로 요약하시오.
+				주어진 내용을 1줄로 요약하시오.
 				###
 				내용 : %s
 			""", text);
