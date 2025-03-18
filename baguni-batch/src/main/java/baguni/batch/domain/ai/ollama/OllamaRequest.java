@@ -1,9 +1,9 @@
-package baguni.batch.domain.analyzer.ollama;
+package baguni.batch.domain.ai.ollama;
 
 import lombok.Builder;
 
 @Builder
-public record LlamaRequest(
+public record OllamaRequest(
 	String model,
 	Boolean stream,
 	String prompt

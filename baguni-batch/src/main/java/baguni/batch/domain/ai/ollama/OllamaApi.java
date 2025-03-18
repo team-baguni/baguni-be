@@ -1,4 +1,4 @@
-package baguni.batch.domain.analyzer.ollama;
+package baguni.batch.domain.ai.ollama;
 
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.service.annotation.PostExchange;
@@ -9,6 +9,6 @@ import org.springframework.web.service.annotation.PostExchange;
 public interface OllamaApi {
 
 	@PostExchange(url = "/api/generate")
-	LlamaResponse sendRequest(@RequestBody LlamaRequest request);
+	OllamaResponse sendRequest(@RequestBody OllamaRequest request);
 }
 
