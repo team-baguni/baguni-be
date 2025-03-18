@@ -9,14 +9,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.ResourceAccessException;
 
 import baguni.batch.domain.analyzer.AiArticleAnalyzer;
-import baguni.batch.lib.Task;
 import baguni.batch.domain.crawler.LinkCrawler;
 import baguni.batch.domain.link.util.LinkApi;
 import baguni.common.event.EventMessenger;
 import baguni.common.event.LinkCheckEvent;
 import baguni.infra.infrastructure.link.dto.LinkCommand;
 import baguni.infra.infrastructure.link.LinkDataHandler;
-import baguni.infra.infrastructure.link.dto.LinkResult;
 import io.opentelemetry.instrumentation.annotations.WithSpan;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -46,7 +44,7 @@ public class LinkService {
 			return;
 
 		var crawled = linkCrawler.crawl(url);
-		var updatedLink = linkDataHandler.updateLink(
+		linkDataHandler.updateLink(
 			new LinkCommand.UpdateWithCrawledData(
 				url,
 				crawled.title(),
@@ -55,7 +53,6 @@ public class LinkService {
 				crawled.content()
 			)
 		);
-		// LinkAnalyzeTask(updatedLink).run(); // 분석까지 원큐에 할 경우 주석 해제
 		eventMessenger.send(new LinkCheckEvent(crawled.imageUrl())); // image_url 검사
 	}
 
@@ -70,7 +67,6 @@ public class LinkService {
 	}
 
 	/**
-	 * (1) 기존 구현 버전
 	 *     이전 작업 종료 후 30분마다 1번씩 실행한다.
 	 *     - 실패 단위 == 작업 성격 (카테고리/분석)
 	 *     - 단점 == 로직 전체가 DB 특정 칼럼의 Null 여부에 의존한다.
@@ -83,29 +79,6 @@ public class LinkService {
 	}
 
 	// Internal functions ---------------------------------------------
-
-	/**
-	 * (2) FluentAPI 버전
-	 *     - 실패 단위 == 링크 1개
-	 *     - 1. 메시지큐를 이용할 경우, 메시지별로 Task 실행
-	 *          ex. LinkAnalyzeTask(sourceLink).run();
-	 *     - 2. 새 쓰레드에서 처리하고 싶은 경우
-	 *          ex. new Thread( LinkAnalyzeTask(sourceLink) ).start();
-	 */
-	private Runnable LinkAnalyzeTask(LinkResult link) {
-		return new Task()
-			.using(
-				link.content()
-			).then((content) -> {
-				var summary = articleAnalyzer.summarize(content);
-				linkDataHandler.updateLink(new LinkCommand.UpdateSummary(link.url(), summary));
-				return summary;
-			}).andThen((summary) -> {
-				var category = articleAnalyzer.categorize(summary);
-				linkDataHandler.updateLink(new LinkCommand.UpdateCategories(link.url(), category));
-			}).onFailure((ex -> log.error("분석 실패 url:{}", link.url(), ex)));
-	}
-
 	private void analyzeSummaryAndUpdate() {
 		for (var link : linkDataHandler.getLinksForSummary()) {
 			try {
