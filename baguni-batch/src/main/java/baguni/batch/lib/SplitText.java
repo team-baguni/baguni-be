@@ -47,7 +47,6 @@ public class SplitText {
 				}
 			}
 
-			log.info("chunk : {}", chunk);
 			result.add(chunk);
 			start = end;  // 다음 덩어리 시작점
 			count++;
