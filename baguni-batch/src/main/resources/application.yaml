@@ -4,6 +4,8 @@ spring:
     include:
       - infra
       - common
+basic:
+  image-url: https://app.baguni.kr/image/og_image.png
 ---
 # -----------------------------
 #       LOCAL SETTINGS
