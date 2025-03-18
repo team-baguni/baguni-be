@@ -5,7 +5,6 @@ import java.util.List;
 public class LinkCommand {
 
 	public record UpdateImage(
-		Long userId,
 		String imageUrl,
 		String updateImageUrl
 	) {

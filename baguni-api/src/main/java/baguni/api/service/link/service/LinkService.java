@@ -45,12 +45,6 @@ public class LinkService {
 	}
 
 	@WithSpan
-	@Transactional
-	public void updateLink(LinkCommand.UpdateImage command) {
-		linkDataHandler.updateLink(command);
-	}
-
-	@WithSpan
 	@Transactional(readOnly = true)
 	@Cacheable(cacheNames = CacheType.CACHE_NAME.DAILY_RSS_BLOG_ARTICLE)
 	public List<BlogLinkInfo> getRssLinkList(int limit) {
