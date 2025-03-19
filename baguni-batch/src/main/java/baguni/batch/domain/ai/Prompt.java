@@ -1,19 +1,16 @@
 package baguni.batch.domain.ai;
 
-import lombok.RequiredArgsConstructor;
-
-@RequiredArgsConstructor
-public class Prompt {
-
-	private final String prompt;
+public record Prompt(
+	String message
+) {
 
 	public int length() {
-		return prompt.length();
+		return message.length();
 	}
 
 	@Override
 	public String toString() {
-		return prompt;
+		return message;
 	}
 
 	public static Prompt Summarize(String text) {
