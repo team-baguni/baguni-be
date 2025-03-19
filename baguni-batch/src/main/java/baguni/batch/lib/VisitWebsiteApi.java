@@ -25,5 +25,5 @@ public interface VisitWebsiteApi {
 	 * 추후, url에 접근하여 상태 코드를 판단하는 경우까지 고려해 Link로 정의
 	 */
 	@GetExchange
-	void checkImageUrl(URI uri);
+	void checkUrl(URI uri);
 }
