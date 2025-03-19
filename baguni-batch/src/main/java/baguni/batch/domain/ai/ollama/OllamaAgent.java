@@ -4,6 +4,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.ResourceAccessException;
 
 import baguni.batch.domain.ai.AiAgent;
+import baguni.batch.domain.ai.Prompt;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -16,7 +17,7 @@ public class OllamaAgent implements AiAgent {
 	private final OllamaApi ollamaApi;
 
 	@Override
-	public String ask(String prompt) {
+	public String ask(Prompt prompt) {
 		long start = System.currentTimeMillis();
 		log.info("Ollama length: {}, prompt: {}", prompt.length(), prompt);
 		String response;
@@ -27,7 +28,7 @@ public class OllamaAgent implements AiAgent {
 					.builder()
 					.model(MODEL)
 					.stream(false)
-					.prompt(prompt)
+					.prompt(prompt.toString())
 					.build()
 				).response();
 		} catch (ResourceAccessException e) {

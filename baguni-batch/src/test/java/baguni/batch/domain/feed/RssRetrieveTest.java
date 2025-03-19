@@ -7,8 +7,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
 import baguni.BaguniBatchApplication;
-import baguni.batch.domain.feed.util.FeedApi;
-import baguni.batch.domain.feed.service.FeedService;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j

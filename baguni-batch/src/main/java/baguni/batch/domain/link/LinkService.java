@@ -1,4 +1,4 @@
-package baguni.batch.domain.link.service;
+package baguni.batch.domain.link;
 
 import java.net.URI;
 import java.util.concurrent.TimeUnit;
@@ -13,7 +13,7 @@ import org.springframework.web.client.ResourceAccessException;
 
 import baguni.batch.domain.analyzer.AiArticleAnalyzer;
 import baguni.batch.domain.crawler.LinkCrawler;
-import baguni.batch.domain.link.util.LinkApi;
+import baguni.batch.lib.VisitWebsiteApi;
 import baguni.infra.infrastructure.link.dto.LinkCommand;
 import baguni.infra.infrastructure.link.LinkDataHandler;
 import io.opentelemetry.instrumentation.annotations.WithSpan;
@@ -28,7 +28,7 @@ public class LinkService {
 	private final LinkDataHandler linkDataHandler;
 	private final LinkCrawler linkCrawler;
 	private final AiArticleAnalyzer articleAnalyzer;
-	private final LinkApi linkApi;
+	private final VisitWebsiteApi linkApi;
 
 	@Value("${basic.image-url}")
 	private String basicImageUrl;
@@ -36,6 +36,7 @@ public class LinkService {
 	@WithSpan
 	public void updateLink(String url) {
 		var link = linkDataHandler.getLink(url);
+
 		if (!isValidUrl(url)) { // 링크 유효성 검사 (유효하지 않은 경우, isValid = false)
 			linkDataHandler.updateLink(new LinkCommand.UpdateIsValid(url, Boolean.FALSE));
 			return; // 유효하지 않으면 다음 작업을 수행할 이유가 없음.
@@ -133,5 +134,4 @@ public class LinkService {
 	private int getCharacterCount(String data) {
 		return data.codePointCount(0, data.length());
 	}
-
 }
