@@ -4,15 +4,16 @@ import java.net.URI;
 import java.util.concurrent.TimeUnit;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.ResourceAccessException;
 
 import baguni.batch.domain.analyzer.AiArticleAnalyzer;
 import baguni.batch.domain.crawler.LinkCrawler;
 import baguni.batch.domain.link.util.LinkApi;
-import baguni.common.event.EventMessenger;
-import baguni.common.event.LinkCheckEvent;
 import baguni.infra.infrastructure.link.dto.LinkCommand;
 import baguni.infra.infrastructure.link.LinkDataHandler;
 import io.opentelemetry.instrumentation.annotations.WithSpan;
@@ -28,7 +29,6 @@ public class LinkService {
 	private final LinkCrawler linkCrawler;
 	private final AiArticleAnalyzer articleAnalyzer;
 	private final LinkApi linkApi;
-	private final EventMessenger eventMessenger;
 
 	@Value("${basic.image-url}")
 	private String basicImageUrl;
@@ -36,6 +36,10 @@ public class LinkService {
 	@WithSpan
 	public void updateLink(String url) {
 		var link = linkDataHandler.getLink(url);
+		if (!isValidUrl(url)) { // 링크 유효성 검사 (유효하지 않은 경우, isValid = false)
+			linkDataHandler.updateLink(new LinkCommand.UpdateIsValid(url, Boolean.FALSE));
+			return; // 유효하지 않으면 다음 작업을 수행할 이유가 없음.
+		}
 
 		if (link.getDaysPassed() < 90)
 			return;
@@ -49,21 +53,10 @@ public class LinkService {
 				url,
 				crawled.title(),
 				crawled.description(), // 삭제 예정
-				crawled.imageUrl(),
+				isValidImageUrl(crawled.imageUrl()) ? crawled.imageUrl() : basicImageUrl, // image_url 유효성 검사
 				crawled.content()
 			)
 		);
-		eventMessenger.send(new LinkCheckEvent(crawled.imageUrl())); // image_url 검사
-	}
-
-	@WithSpan
-	public void updateImageUrl(String imageUrl) {
-		try {
-			linkApi.checkImageUrl(URI.create(imageUrl));
-		} catch (ResourceAccessException e) {
-			log.info("image_url 타임 아웃 발생 url : {}, {},", imageUrl, e.getMessage());
-			linkDataHandler.updateLink(new LinkCommand.UpdateImage(imageUrl, basicImageUrl)); // 타임아웃 발생 시 접근할 수 없는 링크
-		}
 	}
 
 	/**
@@ -113,7 +106,32 @@ public class LinkService {
 		}
 	}
 
+	private boolean isValidImageUrl(String imageUrl) {
+		try {
+			linkApi.checkUrl(URI.create(imageUrl));
+		} catch (ResourceAccessException e) {
+			log.info("image_url 타임 아웃 발생, url : {}, {},", imageUrl, e.getMessage());
+			return false;
+		}
+		return true;
+	}
+
+	private boolean isValidUrl(String url) {
+		try {
+			linkApi.checkUrl(URI.create(url));
+		} catch (HttpStatusCodeException e) { // 4xx, 5xx 응답 시 발생하는 예외
+			HttpStatusCode statusCode = e.getStatusCode();
+			if (statusCode == HttpStatus.UNAUTHORIZED || statusCode == HttpStatus.FORBIDDEN) {
+				log.error("[에러x 확인 전용] 401 또는 403 응답 : {}", statusCode); // 401, 403 응답하는 상황 확인을 위한 로그
+				return true; // 401, 403의 경우 유효하다고 판단
+			}
+			return false;
+		}
+		return true;
+	}
+
 	private int getCharacterCount(String data) {
 		return data.codePointCount(0, data.length());
 	}
+
 }

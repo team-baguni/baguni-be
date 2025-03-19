@@ -13,5 +13,5 @@ import org.springframework.web.service.annotation.GetExchange;
 public interface LinkApi {
 
 	@GetExchange
-	ResponseEntity<Void> checkImageUrl(URI uri);
+	ResponseEntity<Void> checkUrl(URI uri);
 }

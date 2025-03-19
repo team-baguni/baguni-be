@@ -21,6 +21,7 @@ public interface LinkMapper {
 	@Mapping(target = "isRss", ignore = true)
 	@Mapping(target = "publishedAt", ignore = true)
 	@Mapping(target = "summary", ignore = true)
+	@Mapping(target = "isValid", ignore = true)
 	Link of(LinkInfo linkInfo);
 
 	LinkInfo toLinkInfo(Link link);
