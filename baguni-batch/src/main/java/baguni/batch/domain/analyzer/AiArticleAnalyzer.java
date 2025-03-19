@@ -10,7 +10,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import baguni.batch.domain.ai.AiAgent;
-import baguni.batch.domain.ai.PromptBuilder;
+import baguni.batch.domain.ai.Prompt;
 import baguni.batch.lib.SplitText;
 import io.opentelemetry.instrumentation.annotations.WithSpan;
 import lombok.extern.slf4j.Slf4j;
@@ -32,7 +32,7 @@ public class AiArticleAnalyzer implements ArticleAnalyzer {
 	public String summarize(String content) {
 		return new SplitText(content)
 			.byCharacterCount(1000, 4).stream()
-			.map(subText -> aiAgent.ask(PromptBuilder.summarize(subText)))
+			.map(subText -> aiAgent.ask(Prompt.Summarize(subText)))
 			.collect(Collectors.joining());
 	}
 
@@ -41,10 +41,10 @@ public class AiArticleAnalyzer implements ArticleAnalyzer {
 	public List<String> categorize(String content) {
 		var categories = new ArrayList<String>();
 
-		var mainCategory = aiAgent.ask(PromptBuilder.getMainCategory(content));
+		var mainCategory = aiAgent.ask(Prompt.GetMainCategory(content));
 		categories.add(mainCategory);
 
-		var subCategory = aiAgent.ask(PromptBuilder.getSubCategory(content));
+		var subCategory = aiAgent.ask(Prompt.GetSubCategory(content));
 		categories.addAll(Arrays.stream(subCategory.split(", ")).toList());
 
 		return categories;
