@@ -1,0 +1,2 @@
+ALTER TABLE baguni_db.link
+    ADD COLUMN is_valid BOOLEAN NOT NULL DEFAULT TRUE;

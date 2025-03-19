@@ -14,6 +14,7 @@ public record LinkResult(
 	String categories,
 	String imageUrl,
 	Boolean isRss, // isFeed로 변경 예정
+	Boolean isValid,
 	LocalDateTime updatedAt
 ) {
 	public long getDaysPassed() {
