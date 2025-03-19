@@ -1,4 +1,4 @@
-package baguni.batch.domain.feed.service;
+package baguni.batch.domain.feed;
 
 import java.io.StringReader;
 import java.net.URI;
@@ -12,10 +12,10 @@ import com.rometools.rome.feed.synd.SyndFeed;
 import com.rometools.rome.io.FeedException;
 import com.rometools.rome.io.SyndFeedInput;
 
-import baguni.batch.domain.feed.util.FeedApi;
 import baguni.batch.domain.feed.dto.AtomFeed;
 import baguni.batch.domain.feed.dto.Article;
 import baguni.batch.domain.feed.dto.RssFeed;
+import baguni.batch.lib.VisitWebsiteApi;
 import baguni.infra.infrastructure.blog.BlogDataHandler;
 import baguni.common.event.LinkCreateEvent;
 import baguni.common.event.EventMessenger;
@@ -34,7 +34,7 @@ public class FeedService {
 	private final EventMessenger eventMessenger;
 	private final BlogDataHandler blogDataHandler;
 	private final LinkDataHandler linkDataHandler;
-	private final FeedApi feedApi;
+	private final VisitWebsiteApi restApi;
 	private final XmlMapper xmlMapper;
 
 	/**
@@ -45,7 +45,7 @@ public class FeedService {
 	public void saveBlogArticleLinks() {
 		blogDataHandler.getAllBlogs().stream()
 					   .map(blog -> {
-						   String xml = feedApi.getFeed(URI.create(blog.getUrl()));
+						   String xml = restApi.getFeed(URI.create(blog.getUrl()));
 						   return isRss(xml, blog) ? getRssArticles(xml, blog) : getAtomArticles(xml, blog);
 					   })
 					   .flatMap(List::stream)

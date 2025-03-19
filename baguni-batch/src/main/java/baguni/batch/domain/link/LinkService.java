@@ -1,4 +1,4 @@
-package baguni.batch.domain.link.service;
+package baguni.batch.domain.link;
 
 import java.net.URI;
 import java.util.concurrent.TimeUnit;
@@ -10,7 +10,7 @@ import org.springframework.web.client.ResourceAccessException;
 
 import baguni.batch.domain.analyzer.AiArticleAnalyzer;
 import baguni.batch.domain.crawler.LinkCrawler;
-import baguni.batch.domain.link.util.LinkApi;
+import baguni.batch.lib.VisitWebsiteApi;
 import baguni.common.event.EventMessenger;
 import baguni.common.event.LinkCheckEvent;
 import baguni.infra.infrastructure.link.dto.LinkCommand;
@@ -27,7 +27,7 @@ public class LinkService {
 	private final LinkDataHandler linkDataHandler;
 	private final LinkCrawler linkCrawler;
 	private final AiArticleAnalyzer articleAnalyzer;
-	private final LinkApi linkApi;
+	private final VisitWebsiteApi restApi;
 	private final EventMessenger eventMessenger;
 
 	@Value("${basic.image-url}")
@@ -59,7 +59,7 @@ public class LinkService {
 	@WithSpan
 	public void updateImageUrl(String imageUrl) {
 		try {
-			linkApi.checkImageUrl(URI.create(imageUrl));
+			restApi.checkImageUrl(URI.create(imageUrl));
 		} catch (ResourceAccessException e) {
 			log.info("image_url 타임 아웃 발생 url : {}, {},", imageUrl, e.getMessage());
 			linkDataHandler.updateLink(new LinkCommand.UpdateImage(imageUrl, basicImageUrl)); // 타임아웃 발생 시 접근할 수 없는 링크
