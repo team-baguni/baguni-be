@@ -22,7 +22,7 @@ public class AiArticleAnalyzer implements ArticleAnalyzer {
 	private AiAgent aiAgent;
 
 	@Autowired
-	@Qualifier("llama3.2-korean")
+	@Qualifier("ollama-local")
 	public void setAiAgent(AiAgent aiAgent) {
 		this.aiAgent = aiAgent;
 	}

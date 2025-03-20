@@ -9,11 +9,13 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-@Component("llama3.2-korean")
+@Component("ollama-local")
 @RequiredArgsConstructor
 public class OllamaAgent implements AiAgent {
 
-	private final String MODEL = "llama3.2-korean";
+	// private final String MODEL = "llama3.2-korean"; // Meta
+	private final String MODEL = "exaone3.5"; // LG
+
 	private final OllamaApi ollamaApi;
 
 	@Override
