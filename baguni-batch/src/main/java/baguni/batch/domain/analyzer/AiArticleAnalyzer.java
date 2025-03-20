@@ -32,6 +32,7 @@ public class AiArticleAnalyzer implements ArticleAnalyzer {
 	public String summarize(String content) {
 		return new SplitText(content)
 			.byCharacterCount(1000, 4).stream()
+			.map(subtext -> subtext.replace("\n", ""))
 			.map(subText -> aiAgent.ask(Prompt.Summarize(subText)))
 			.collect(Collectors.joining());
 	}
