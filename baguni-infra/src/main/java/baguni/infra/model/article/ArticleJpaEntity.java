@@ -31,8 +31,8 @@ public class ArticleJpaEntity extends BaseEntity {
 	private String imageUrl;
 
 	@OneToOne
-	@JoinColumn(name = "guid_url_id", unique = true)
-	private GuidUrlJpaEntity guidUrl;
+	@JoinColumn(name = "link_id", unique = true)
+	private LinkJpaEntity link;
 
 	@OneToOne
 	@JoinColumn(name = "detail_id", unique = true)

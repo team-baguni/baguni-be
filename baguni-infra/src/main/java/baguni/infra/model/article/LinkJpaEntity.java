@@ -17,9 +17,9 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @Entity
-@Table(name = "guid_url")
+@Table(name = "link-v2")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class GuidUrlJpaEntity extends BaseEntity {
+public class LinkJpaEntity extends BaseEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
