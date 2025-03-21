@@ -2,6 +2,9 @@ package baguni.infra.model.article;
 
 import java.util.UUID;
 
+import org.hibernate.annotations.ColumnDefault;
+
+import baguni.infra.model.common.BaseEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -16,7 +19,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Table(name = "guid_url")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class GuidUrlJpaEntity {
+public class GuidUrlJpaEntity extends BaseEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,4 +31,8 @@ public class GuidUrlJpaEntity {
 
 	@Column(name = "url", nullable = false, columnDefinition = "VARCHAR(2048)", unique = true)
 	private String url; // 실제 url
+
+	@Column(name = "is_accessible", nullable = false)
+	@ColumnDefault("true")
+	private Boolean isAccessible; // 링크가 유효 한가?
 }

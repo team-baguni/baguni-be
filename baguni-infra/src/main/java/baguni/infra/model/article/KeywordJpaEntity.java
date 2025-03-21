@@ -1,5 +1,6 @@
 package baguni.infra.model.article;
 
+import baguni.infra.model.common.BaseEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -14,7 +15,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Table(name = "keyword")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class KeywordJpaEntity {
+public class KeywordJpaEntity extends BaseEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

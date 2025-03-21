@@ -2,6 +2,7 @@ package baguni.infra.model.article;
 
 import java.util.Set;
 
+import baguni.infra.model.common.BaseEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -20,7 +21,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Table(name = "article_detail")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class ArticleDetailJpaEntity {
+public class ArticleDetailJpaEntity extends BaseEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
