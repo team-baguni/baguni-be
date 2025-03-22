@@ -45,33 +45,22 @@ public class OllamaAgent extends AiAgent {
 		return tryCatchWrapper("Ollama 카테고리 추출", () -> {
 			var request = OllamaChatRequestBuilder.Categorize(MODEL, text);
 			var response = ollamaApi.chat(request);
-			var resultJsonString = response.message().content();
-			var result = new ObjectMapper().readValue(resultJsonString, OllamaCategorizeResult.class);
-			return result.category();
+			var category = new ObjectMapper()
+				.readValue(response.message().content(), OllamaCategorizeResult.class)
+				.category();
+			return cleanWords(category);
 		});
 	}
 
 	@Override
 	public List<String> getKeywords(String text) {
 		return tryCatchWrapper("Ollama 키워드 목록 추출", () -> {
-			var keywords = new ArrayList<String>();
-
-			// TODO: (개발 --> 개발 하위 카테고리 선택) 처럼 하위 카테고리 별로 다른 프롬프트 실행할 것
-			var request1 = OllamaChatRequestBuilder.SubCategorize(MODEL, text);
-			var response1 = ollamaApi.chat(request1);
-			var result1JsonString = response1.message().content();
-			var result1 = new ObjectMapper().readValue(result1JsonString, OllamaSubCategorizeResult.class);
-			var result1Cleaned = cleanWords(result1.subcategory());
-			keywords.add(result1Cleaned);
-
-			var request2 = OllamaChatRequestBuilder.GetKeywords(MODEL, text);
-			var response2 = ollamaApi.chat(request2);
-			var result2JsonString = response2.message().content();
-			var result2 = new ObjectMapper().readValue(result2JsonString, OllamaGetKeywordsResult.class);
-			var result2Cleaned = result2.keywords().stream().map(this::cleanWords).toList();
-			keywords.addAll(result2Cleaned);
-
-			return keywords;
+			var request = OllamaChatRequestBuilder.GetKeywords(MODEL, text);
+			var response = ollamaApi.chat(request);
+			var keywords = new ObjectMapper()
+				.readValue(response.message().content(), OllamaGetKeywordsResult.class)
+				.keywords();
+			return keywords.stream().map(this::cleanWords).toList();
 		});
 	}
 
