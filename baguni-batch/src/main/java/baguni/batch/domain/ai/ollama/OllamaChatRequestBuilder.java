@@ -85,7 +85,7 @@ public class OllamaChatRequestBuilder {
 	}
 
 	public static OllamaChatRequest SubCategorize(
-		String model, String text, String dataPattern
+		String model, String text
 	) throws JsonProcessingException {
 		String jsonSchema = """
 			{
