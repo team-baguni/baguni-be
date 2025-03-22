@@ -61,16 +61,24 @@ public class OllamaAgent extends AiAgent {
 			var response1 = ollamaApi.chat(request1);
 			var result1JsonString = response1.message().content();
 			var result1 = new ObjectMapper().readValue(result1JsonString, OllamaSubCategorizeResult.class);
-			keywords.add(result1.subcategory());
+			var result1Cleaned = cleanWords(result1.subcategory());
+			keywords.add(result1Cleaned);
 
 			var request2 = OllamaChatRequestBuilder.GetKeywords(MODEL, text);
 			var response2 = ollamaApi.chat(request2);
 			var result2JsonString = response2.message().content();
 			var result2 = new ObjectMapper().readValue(result2JsonString, OllamaGetKeywordsResult.class);
-			keywords.addAll(result2.keywords());
+			var result2Cleaned = result2.keywords().stream().map(this::cleanWords).toList();
+			keywords.addAll(result2Cleaned);
 
 			return keywords;
 		});
+	}
+
+	// 강조 표시 특수 문자 등의 프롬프트 꾸미기 문자 제거
+	// 간혹 프롬프트 결과에서 **Backend** 처럼 강조가 붙는 경우 있음.
+	private String cleanWords(String word) {
+		return word.replaceAll("\\*", "");
 	}
 
 	private <T> T tryCatchWrapper(String action, ThrowingSupplier<T> supplier) {
