@@ -17,7 +17,7 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @Entity
-@Table(name = "link-v2")
+@Table(name = "link_v2")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class LinkJpaEntity extends BaseEntity {
 
