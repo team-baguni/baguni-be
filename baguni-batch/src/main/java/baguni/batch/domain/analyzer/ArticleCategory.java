@@ -1,5 +1,6 @@
 package baguni.batch.domain.analyzer;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -8,49 +9,56 @@ public enum ArticleCategory {
 
 	/**
 	 * 개발
-	 * TODO: 분류를 더 추가 할 것.
 	 */
-	IT_FRONTEND
-		("프론트엔드 개발", List.of("UI/UX", "리액트", "컴포넌트", "렌더링")),
-	IT_BACKEND
-		("백엔드 개발", List.of("AWS", "서버", "Spring", "Node.js")),
-	IT_DEVOPS
-		("데브옵스", List.of("Docker", "Kubernetes", "CI/CD", "Jenkins")),
-	IT_AI
-		("인공지능", List.of("머신러닝", "RAG", "파인튜닝", "LLM")),
+	IT_FRONTEND("프론트엔드 개발",
+		__CATEGORIZE_HINT__(
+			"UI/UX", "리액트", "컴포넌트", "렌더링"
+		)),
 
+	IT_BACKEND("백엔드 개발",
+		__CATEGORIZE_HINT__(
+			"AWS", "서버", "Spring", "Node.js", "Docker", "Kubernetes"
+		)),
+
+	IT_AI("인공지능",
+		__CATEGORIZE_HINT__(
+			"머신러닝", "RAG", "파인튜닝", "LLM"
+		)),
 	/**
 	 * 디자인
-	 * TODO: 위처럼 상세 분류화 할 것.
 	 */
-	DESIGN
-		("디자인", List.of("UI", "Figma", "Adobe")),
-
+	DESIGN("디자인",
+		__CATEGORIZE_HINT__(
+			"UI", "Figma", "Adobe"
+		)),
 	/**
 	 * 마케팅
-	 * TODO: 위처럼 상세 분류화 할 것.
 	 */
-	MARKETING
-		("마케팅", List.of()),
-
+	MARKETING("마케팅",
+		__CATEGORIZE_HINT__(
+			/* 카테고리 분류에 참고할 키워드를 작성하세요 */
+		)),
+	/**
+	 * 프로덕트 매니징
+	 */
+	PM("프로덕트 매니징",
+		__CATEGORIZE_HINT__(
+			/* 카테고리 분류에 참고할 키워드를 작성하세요 */
+		)),
 	/**
 	 * 음악
-	 * TODO: 위처럼 상세 분류화 할 것.
 	 */
-	PM
-		("프로덕트 매니징", List.of()),
-
+	MUSIC("음악",
+		__CATEGORIZE_HINT__(
+			/* 카테고리 분류에 참고할 키워드를 작성하세요 */
+		)),
 	/**
-	 * TODO: 위처럼 상세 분류화 할 것.
+	 * 분류할 수 없음
 	 */
-	MUSIC
-		("음악", List.of()),
-
-	/**
-	 * TODO: 위처럼 상세 분류화 할 것.
-	 */
-	UNKNOWN
-		("기타", List.of()),
+	UNKNOWN("기타",
+		__CATEGORIZE_HINT__(
+			/* 카테고리 분류에 참고할 키워드를 작성하세요 */
+		)),
 	;
 
 	public final String value;
@@ -92,5 +100,10 @@ public enum ArticleCategory {
 				   .filter(category -> !category.associates.isEmpty())
 				   .map(category -> "- " + String.join(", ", category.associates) + " = " + category.value)
 				   .collect(Collectors.joining("\n"));
+	}
+
+	@SafeVarargs
+	static <E> List<E> __CATEGORIZE_HINT__(E... Elements) {
+		return Arrays.stream(Elements).toList();
 	}
 }
