@@ -95,7 +95,7 @@ public enum ArticleCategory {
 	 * String Format 예시
 	 * "- A1, A2, A3 = Value" --> 이렇게 변환합니다.
 	 */
-	public static String toDataPattern() {
+	public static String toCategorizeHint() {
 		return List.of(ArticleCategory.values()).stream()
 				   .filter(category -> !category.associates.isEmpty())
 				   .map(category -> "- " + String.join(", ", category.associates) + " = " + category.value)
