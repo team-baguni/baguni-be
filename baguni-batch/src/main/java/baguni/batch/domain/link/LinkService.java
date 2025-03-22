@@ -49,19 +49,14 @@ public class LinkService {
 				crawled.content()
 			)
 		);
-	}
 
-	/**
-	 * NEW: 이 함수로 교체할 것. + 이 함수는 LinkService가 아닌, 도메인에 구체화된 ArticleService로 가야 한다.
-	 */
-	public void analyze(/*Article article*/) {
-		// 0. 링크 크롤링 후 나온 본문을 그대로 전달 받는다.
-
-		// 1. 분석
-		// var result = articleAnalyzer.analyze(/* article.content() */);
-
-		// 2. 결과 업데이트
-		// articleStore.UpdateArticle(new UpdateCommand(...))
+		/* (대체 안) 비동기로 분석 시작 예시.
+		 * By default, this runs with fork/join pool.
+		 * https://medium.com/@reetesh043/a-deep-dive-into-javas-forkjoinpool-mechanics-556f82d160fb
+		 */
+		// CompletableFuture
+		// 	.supplyAsync(() -> articleAnalyzer.analyze(crawled.content()))
+		// 	.thenAccept((analyzeResult) -> {/* 분석 결과를 저장 */});
 	}
 
 	/**
