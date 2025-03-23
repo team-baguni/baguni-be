@@ -50,7 +50,7 @@ public class LinkService {
 				crawled.title(),
 				crawled.description(), // 삭제 예정
 				linkValidator.isAccessible(crawled.imageUrl()) ? crawled.imageUrl() : basicImageUrl,
-				crawled.content()
+				null // crawled.content() // 이제 저장 필요 없음
 			)
 		);
 
