@@ -3,6 +3,8 @@ package baguni.batch.domain.link;
 import java.util.ArrayList;
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -25,6 +27,10 @@ public class LinkService {
 	private final LinkValidator linkValidator;
 	private final LinkDataHandler linkDataHandler;
 	private final ArticleAnalyzer articleAnalyzer;
+
+	private static final Executor executor = Executors.newSingleThreadExecutor(
+		runnable -> new Thread(runnable, "Analyzer-Single-Thread")
+	);
 
 	@Value("${basic.image-url}")
 	private String basicImageUrl;
@@ -54,19 +60,14 @@ public class LinkService {
 			)
 		);
 
-		/* (대체 안) 비동기로 분석 시작 예시.
-		 * By default, this runs with fork/join pool.
-		 * https://medium.com/@reetesh043/a-deep-dive-into-javas-forkjoinpool-mechanics-556f82d160fb
-		 */
+		/* 비동기 분석 시작 */
 		CompletableFuture
-			.supplyAsync(() -> articleAnalyzer.analyze(crawled.content()))
+			.supplyAsync(() -> articleAnalyzer.analyze(crawled.content()), executor)
 			.thenAccept((analyzeResult) -> { /* 분석 결과를 저장 */
-				// 1. 요약 업데이트 (테스트용)
-				linkDataHandler.updateLink(new LinkCommand.UpdateSummary(link.url(), analyzeResult.summary()));
-				// 2. 카테고리 업데이트 (테스트용)
 				var arr = new ArrayList<String>();
 				arr.add(analyzeResult.category());
 				arr.addAll(analyzeResult.keywords());
+				linkDataHandler.updateLink(new LinkCommand.UpdateSummary(link.url(), analyzeResult.summary()));
 				linkDataHandler.updateLink(new LinkCommand.UpdateCategories(link.url(), arr));
 			}).whenComplete((__, error) -> {
 				if (Objects.nonNull(error)) {
