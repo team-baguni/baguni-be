@@ -1,4 +1,4 @@
-package baguni.batch.domain.ai;
+package baguni.batch.domain.ai.util;
 
 public record Prompt(
 	String message
