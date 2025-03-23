@@ -22,13 +22,13 @@ public class ArticleAnalyzer {
 
 	public AnalyzeResult analyze(String text) {
 		long start = System.currentTimeMillis();
-		log.info("Analyzer 분석 시작. 데이터={}", text);
+		log.info("\nAnalyzer 분석 시작. 데이터={}", text);
 
 		var summary = new SplitText(text)
 			.byCharacterCount(1000).stream()
 			.map(subtext -> subtext.replaceAll("\n", ""))
 			.map(subText -> aiAgent.summarize(subText))
-			.collect(Collectors.joining());
+			.collect(Collectors.joining("\n"));
 
 		var category = aiAgent.categorize(summary);
 
