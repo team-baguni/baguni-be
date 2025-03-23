@@ -1,5 +1,9 @@
 package baguni.batch.domain.link;
 
+import java.util.ArrayList;
+import java.util.Objects;
+import java.util.concurrent.CompletableFuture;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -54,9 +58,23 @@ public class LinkService {
 		 * By default, this runs with fork/join pool.
 		 * https://medium.com/@reetesh043/a-deep-dive-into-javas-forkjoinpool-mechanics-556f82d160fb
 		 */
-		// CompletableFuture
-		// 	.supplyAsync(() -> articleAnalyzer.analyze(crawled.content()))
-		// 	.thenAccept((analyzeResult) -> {/* 분석 결과를 저장 */});
+		CompletableFuture
+			.supplyAsync(() -> articleAnalyzer.analyze(crawled.content()))
+			.thenAccept((analyzeResult) -> { /* 분석 결과를 저장 */
+				// 1. 요약 업데이트 (테스트용)
+				linkDataHandler.updateLink(new LinkCommand.UpdateSummary(link.url(), analyzeResult.summary()));
+				// 2. 카테고리 업데이트 (테스트용)
+				var arr = new ArrayList<String>();
+				arr.add(analyzeResult.category());
+				arr.addAll(analyzeResult.keywords());
+				linkDataHandler.updateLink(new LinkCommand.UpdateCategories(link.url(), arr));
+			}).whenComplete((__, error) -> {
+				if (Objects.nonNull(error)) {
+					log.error("분석 실패: {}", url, error);
+				} else {
+					log.info("분석 성공: {}", url);
+				}
+			});
 	}
 
 	/**
