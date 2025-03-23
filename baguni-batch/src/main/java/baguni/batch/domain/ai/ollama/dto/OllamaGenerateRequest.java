@@ -1,9 +1,9 @@
-package baguni.batch.domain.ai.ollama;
+package baguni.batch.domain.ai.ollama.dto;
 
 import lombok.Builder;
 
 @Builder
-public record OllamaRequest(
+public record OllamaGenerateRequest(
 	String model,
 	Boolean stream,
 	String prompt
