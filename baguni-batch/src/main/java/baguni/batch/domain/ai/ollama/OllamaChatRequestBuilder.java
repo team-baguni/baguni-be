@@ -81,7 +81,7 @@ public class OllamaChatRequestBuilder {
 						
 							###
 							내용 : %s
-						""", ArticleCategory.toSelectionOption(), ArticleCategory.toDataPattern(), text)
+						""", ArticleCategory.toSelectionOption(), ArticleCategory.toCategorizeHint(), text)
 				).build()))
 			.format(new ObjectMapper().readValue(jsonSchema, Map.class))
 			.build();

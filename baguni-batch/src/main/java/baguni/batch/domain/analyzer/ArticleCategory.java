@@ -11,52 +11,52 @@ public enum ArticleCategory {
 	 * 개발
 	 */
 	IT_FRONTEND("프론트엔드 개발",
-		__CATEGORIZE_HINT__(
+		categorizeHints(
 			"UI/UX", "리액트", "컴포넌트", "렌더링"
 		)),
 
 	IT_BACKEND("백엔드 개발",
-		__CATEGORIZE_HINT__(
+		categorizeHints(
 			"AWS", "서버", "Spring", "Node.js", "Docker", "Kubernetes"
 		)),
 
 	IT_AI("인공지능",
-		__CATEGORIZE_HINT__(
+		categorizeHints(
 			"머신러닝", "RAG", "파인튜닝", "LLM"
 		)),
 	/**
 	 * 디자인
 	 */
 	DESIGN("디자인",
-		__CATEGORIZE_HINT__(
+		categorizeHints(
 			"UI", "Figma", "Adobe"
 		)),
 	/**
 	 * 마케팅
 	 */
 	MARKETING("마케팅",
-		__CATEGORIZE_HINT__(
+		categorizeHints(
 			/* 카테고리 분류에 참고할 키워드를 작성하세요 */
 		)),
 	/**
 	 * 프로덕트 매니징
 	 */
 	PM("프로덕트 매니징",
-		__CATEGORIZE_HINT__(
+		categorizeHints(
 			/* 카테고리 분류에 참고할 키워드를 작성하세요 */
 		)),
 	/**
 	 * 음악
 	 */
 	MUSIC("음악",
-		__CATEGORIZE_HINT__(
+		categorizeHints(
 			/* 카테고리 분류에 참고할 키워드를 작성하세요 */
 		)),
 	/**
 	 * 분류할 수 없음
 	 */
 	UNKNOWN("기타",
-		__CATEGORIZE_HINT__(
+		categorizeHints(
 			/* 카테고리 분류에 참고할 키워드를 작성하세요 */
 		)),
 	;
@@ -103,7 +103,7 @@ public enum ArticleCategory {
 	}
 
 	@SafeVarargs
-	static <E> List<E> __CATEGORIZE_HINT__(E... Elements) {
+	static <E> List<E> categorizeHints(E... Elements) {
 		return Arrays.stream(Elements).toList();
 	}
 }
