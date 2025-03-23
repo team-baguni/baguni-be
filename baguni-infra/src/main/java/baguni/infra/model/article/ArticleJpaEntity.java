@@ -29,12 +29,6 @@ public class ArticleJpaEntity extends BaseEntity {
 	@Column(name = "id")
 	private Long id;
 
-	@Column(name = "title", columnDefinition = "TEXT")
-	private String title;
-
-	@Column(name = "image_url", columnDefinition = "TEXT")
-	private String imageUrl;
-
 	@OneToOne
 	@JoinColumn(name = "link_id", unique = true)
 	private LinkJpaEntity link;
@@ -54,6 +48,6 @@ public class ArticleJpaEntity extends BaseEntity {
 	private Set<KeywordJpaEntity> keywords;
 
 	@OneToOne
-	@JoinColumn(name = "detail_id", unique = true)
-	private ArticleDetailJpaEntity detail;
+	@JoinColumn(name = "information_id", unique = true)
+	private ArticleInformationJpaEntity information;
 }

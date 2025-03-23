@@ -13,17 +13,20 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @Entity
-@Table(name = "article_detail")
+@Table(name = "article_information")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class ArticleDetailJpaEntity extends BaseEntity {
+public class ArticleInformationJpaEntity extends BaseEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "id")
 	private Long id;
 
-	@Column(name = "content", columnDefinition = "TEXT")
-	private String content;
+	@Column(name = "title", columnDefinition = "TEXT")
+	private String title;
+
+	@Column(name = "image_url", columnDefinition = "TEXT")
+	private String imageUrl;
 
 	@Column(name = "summary", columnDefinition = "TEXT")
 	private String summary;

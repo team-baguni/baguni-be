@@ -1,44 +1,40 @@
 create table `link_v2`
 (
-    id            bigint auto_increment
-        primary key,
+    id            bigint auto_increment primary key,
+    guid          binary(16)       not null,
+    url           varchar(2048)    not null,
+    is_accessible bit default b'1' not null,
     created_at    datetime(6)      not null,
     updated_at    datetime(6)      not null,
-    guid          binary(16)       not null,
-    is_accessible bit default b'1' not null,
-    url           varchar(2048)    not null,
     constraint UKhsobr1elx8v8phbqymq08sifd
         unique (guid)
 );
 
-create table article_detail
+create table article_information
 (
-    id         bigint auto_increment
-        primary key,
+    id         bigint auto_increment primary key,
+    image_url  text        null,
+    title      text        null,
+    summary    text        null,
     created_at datetime(6) not null,
-    updated_at datetime(6) not null,
-    content    text        null,
-    summary    text        null
+    updated_at datetime(6) not null
 );
 
 create table article
 (
-    id         bigint auto_increment
-        primary key,
-    created_at datetime(6) not null,
-    updated_at datetime(6) not null,
-    image_url  text        null,
-    title      text        null,
-    detail_id  bigint      null,
-    link_id    bigint      null,
+    id             bigint auto_increment primary key,
+    link_id        bigint      null,
+    information_id bigint      null,
+    created_at     datetime(6) not null,
+    updated_at     datetime(6) not null,
     constraint UKa1o1pkpy09ngnhyur344dq8kp
-        unique (detail_id),
+        unique (information_id),
     constraint UKhcr91j53wrjmec2hwphfpgokx
         unique (link_id),
     constraint FK8gsrxlo8iat28wlr8d3q5f0ct
         foreign key (link_id) references `link_v2` (id),
     constraint FKm3qh63x5ta2gvgf6kafdl3084
-        foreign key (detail_id) references article_detail (id)
+        foreign key (information_id) references article_information (id)
 );
 
 create table category

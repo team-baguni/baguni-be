@@ -19,6 +19,9 @@ public interface LinkRepository extends JpaRepository<Link, Long> {
 
 	boolean existsByUrl(String url);
 
+	/**
+	 * @deprecated
+	 */
 	@Query("""
 			SELECT li FROM Link li
 				WHERE li.isRss=true
@@ -27,12 +30,18 @@ public interface LinkRepository extends JpaRepository<Link, Long> {
 		""")
 	List<Link> findAllRssBlogArticlesOrderByPublishedDate(Pageable pageable);
 
+	/**
+	 * @deprecated
+	 */
 	@Query("""
 			SELECT li FROM Link li
 				WHERE li.isRss=true
 		""")
 	List<Link> getAllFeedLinks();
 
+	/**
+	 * @deprecated
+	 */
 	@Query("""
 			SELECT li FROM Link li
 				WHERE li.content IS NOT NULL
@@ -41,6 +50,9 @@ public interface LinkRepository extends JpaRepository<Link, Long> {
 		""")
 	List<Link> findLinksWithOnlyContentAvailable();
 
+	/**
+	 * @deprecated
+	 */
 	@Query("""
 			SELECT li FROM Link li
 				WHERE li.content IS NOT NULL
