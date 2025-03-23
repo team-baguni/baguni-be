@@ -37,7 +37,7 @@ public class OllamaAgent extends AiAgent {
 			var resultJsonString = response.message().content();
 			var result = new ObjectMapper().readValue(resultJsonString, OllamaSummarizeResult.class);
 			return result.summary();
-		});
+		}, text);
 	}
 
 	@Override
@@ -49,7 +49,7 @@ public class OllamaAgent extends AiAgent {
 				.readValue(response.message().content(), OllamaCategorizeResult.class)
 				.category();
 			return cleanWords(category);
-		});
+		}, text);
 	}
 
 	@Override
@@ -61,7 +61,7 @@ public class OllamaAgent extends AiAgent {
 				.readValue(response.message().content(), OllamaGetKeywordsResult.class)
 				.keywords();
 			return keywords.stream().map(this::cleanWords).toList();
-		});
+		}, text);
 	}
 
 	// 강조 표시 특수 문자 등의 프롬프트 꾸미기 문자 제거
@@ -70,16 +70,17 @@ public class OllamaAgent extends AiAgent {
 		return word.replaceAll("\\*", "");
 	}
 
-	private <T> T tryCatchWrapper(String action, ThrowingSupplier<T> supplier) {
+	private <T> T tryCatchWrapper(String action, ThrowingSupplier<T> supplier, String text) {
 		long start = System.currentTimeMillis();
 		try {
+			log.info("{} 작업 시작, 데이터:{}", action, text);
 			return supplier.get();
 		} catch (Exception e) {
-			log.error("{} 에러 발생: {}", action, e.getMessage(), e);
+			log.error("{} 에러 발생:{} 데이터:{}", action, e.getMessage(), text, e);
 			throw new RuntimeException(e);
 		} finally {
 			long end = System.currentTimeMillis();
-			log.info("{} 소요 시간: {}ms", action, end - start);
+			log.info("{} 소요 시간:{}ms", action, end - start);
 		}
 	}
 }

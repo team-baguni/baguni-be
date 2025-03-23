@@ -3,13 +3,11 @@ package baguni.batch.domain.analyzer;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import baguni.batch.domain.ai.AiAgent;
 import baguni.batch.lib.SplitText;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -22,10 +20,11 @@ public class ArticleAnalyzer {
 		this.aiAgent = aiAgent;
 	}
 
-	// TODO: change param to Article (title, content, author...)
-	public AnalyzeResult analyze(String content) {
+	public AnalyzeResult analyze(String text) {
+		long start = System.currentTimeMillis();
+		log.info("Analyzer 분석 시작. 데이터={}", text);
 
-		var summary = new SplitText(content)
+		var summary = new SplitText(text)
 			.byCharacterCount(1000).stream()
 			.map(subtext -> subtext.replaceAll("\n", ""))
 			.map(subText -> aiAgent.summarize(subText))
@@ -34,6 +33,9 @@ public class ArticleAnalyzer {
 		var category = aiAgent.categorize(summary);
 
 		var keywords = aiAgent.getKeywords(summary);
+
+		long end = System.currentTimeMillis();
+		log.info("Analyzer 분석 종료. 총 소요 시간:{}ms", end - start);
 
 		return AnalyzeResult
 			.builder()
