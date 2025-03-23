@@ -30,8 +30,10 @@ public class LinkValidator {
 			return false;
 		} catch (ResourceAccessException e) {
 			log.info("url 타임 아웃 발생, url : {}", url, e);
+			return false;
 		} catch (Exception e) {
 			log.info("url 예외 발생: {},", url, e);
+			return false;
 		}
 		return true;
 	}
