@@ -9,17 +9,16 @@ import org.springframework.stereotype.Component;
 
 import baguni.batch.domain.ai.AiAgent;
 import baguni.batch.lib.SplitText;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Component
 public class ArticleAnalyzer {
 
-	private AiAgent aiAgent;
+	private final AiAgent aiAgent;
 
-	@Autowired
-	@Qualifier("ollama-local")
-	public void setAiAgent(AiAgent aiAgent) {
+	public ArticleAnalyzer(@Qualifier("ollama-local") AiAgent aiAgent) {
 		this.aiAgent = aiAgent;
 	}
 
