@@ -39,8 +39,7 @@ create table article
 
 create table category
 (
-    id         bigint auto_increment
-        primary key,
+    id         bigint auto_increment primary key,
     name       varchar(255) not null,
     created_at datetime(6)  not null,
     updated_at datetime(6)  not null,
@@ -50,8 +49,7 @@ create table category
 
 create table keyword
 (
-    id         bigint auto_increment
-        primary key,
+    id         bigint auto_increment primary key,
     name       varchar(255) not null,
     created_at datetime(6)  not null,
     updated_at datetime(6)  not null,
@@ -59,24 +57,32 @@ create table keyword
         unique (name)
 );
 
-create table article_category
+create table category_article
 (
-    catetory_id bigint null,
-    article_id  bigint not null
-        primary key,
+    id          bigint auto_increment primary key,
+    article_id  bigint      not null,
+    category_id bigint      not null,
+    created_at  datetime(6) not null,
+    updated_at  datetime(6) not null,
+    constraint UC_CATEGORY_ARTICLE
+        unique (category_id, article_id), -- category_id로 탐색 시 인덱스 사용
     constraint FKd61g098hytbe0i2irhjmffk4n
-        foreign key (catetory_id) references category (id),
+        foreign key (category_id) references category (id),
     constraint FKrw5912jiy0vyqoyqlo5r65igk
         foreign key (article_id) references article (id)
 );
 
-create table article_keyword
+create table keyword_article
 (
-    article_id bigint not null,
-    keyword_id bigint not null,
-    primary key (article_id, keyword_id),
-    constraint FK71143jtrpbywwr8ys2eppe7c2
-        foreign key (article_id) references article (id),
+    id         bigint auto_increment primary key,
+    article_id bigint      not null,
+    keyword_id bigint      not null,
+    created_at datetime(6) not null,
+    updated_at datetime(6) not null,
+    constraint UC_KEYWORD_ARTICLE
+        unique (keyword_id, article_id), -- keyword_id로 탐색 시 인덱스 사용
     constraint FKkuyvit2pwelitlj3aulwqrsb5
-        foreign key (keyword_id) references keyword (id)
+        foreign key (keyword_id) references keyword (id),
+    constraint FK71143jtrpbywwr8ys2eppe7c2
+        foreign key (article_id) references article (id)
 );
