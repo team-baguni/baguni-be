@@ -33,7 +33,7 @@ public class LinkService {
 	public void updateLink(String url) {
 		var link = linkDataHandler.getLink(url);
 
-		if (linkValidator.isAccessible(url)) {
+		if (!linkValidator.isAccessible(url)) {
 			linkDataHandler.updateLink(new LinkCommand.UpdateIsValid(url, Boolean.FALSE));
 			return;
 		}
