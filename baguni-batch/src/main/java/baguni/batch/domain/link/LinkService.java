@@ -29,7 +29,7 @@ public class LinkService {
 	private final ArticleAnalyzer articleAnalyzer;
 
 	private static final Executor executor = Executors.newSingleThreadExecutor(
-		runnable -> new Thread(runnable, "Analyzer-Single-Thread")
+		runnable -> new Thread(runnable, "Analyzer-Th-1")
 	);
 
 	@Value("${basic.image-url}")
