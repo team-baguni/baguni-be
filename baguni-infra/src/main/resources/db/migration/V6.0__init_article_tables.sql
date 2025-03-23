@@ -41,9 +41,9 @@ create table category
 (
     id         bigint auto_increment
         primary key,
+    name       varchar(255) not null,
     created_at datetime(6)  not null,
     updated_at datetime(6)  not null,
-    name       varchar(255) not null,
     constraint UK46ccwnsi9409t36lurvtyljak
         unique (name)
 );
@@ -52,9 +52,9 @@ create table keyword
 (
     id         bigint auto_increment
         primary key,
+    name       varchar(255) not null,
     created_at datetime(6)  not null,
     updated_at datetime(6)  not null,
-    name       varchar(255) not null,
     constraint UKhvq9bm3mbguqoicyv02g5crjs
         unique (name)
 );
