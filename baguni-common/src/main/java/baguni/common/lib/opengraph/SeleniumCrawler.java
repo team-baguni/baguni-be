@@ -115,7 +115,7 @@ public class SeleniumCrawler {
 		} catch (org.openqa.selenium.TimeoutException e) {
 			log.error("Selenium TimeoutException 발생 : {}, url : {}", e.getMessage(), uri);
 		} catch (StaleElementReferenceException e) { // 요소가 더 이상 DOM에 존재하지 않거나 업데이트된 경우에 발생하는 오류
-			log.error("DOM 요소가 존재하지 않거나 업데이트 된 상태 : {}", e.getMessage(), e);
+			log.error("DOM 요소가 존재하지 않거나 업데이트 된 상태 : {}, url : {}", e.getMessage(), uri, e);
 		} catch (Exception e) {
 			throw new SeleniumException("Selenium 예외 발생, url : " + uri, e);
 		} finally {

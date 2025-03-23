@@ -24,7 +24,7 @@ public class LinkValidator {
 		} catch (HttpStatusCodeException e) { // 4xx, 5xx 응답 시 발생하는 예외
 			var statusCode = e.getStatusCode();
 			if (statusCode == HttpStatus.UNAUTHORIZED || statusCode == HttpStatus.FORBIDDEN) {
-				log.error("[에러x 확인 전용] 401 또는 403 응답 : {}", statusCode); // 401, 403 응답하는 상황 확인을 위한 로그
+				log.error("[에러x 확인 전용] 401 또는 403 응답 : {}, url : {}", statusCode, url); // 401, 403 응답하는 상황 확인을 위한 로그
 				return true; // 401, 403의 경우 유효하다고 판단
 			}
 			return false;
