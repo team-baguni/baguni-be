@@ -156,8 +156,10 @@ public class Link {
 
 	public Link updateIsValid(Boolean isValid) {
 		this.isValid = isValid;
-		return this;
+		return this; // isValid는 updatedAt을 갱신하지 않는다. 크롤링에 지장 X
 	}
+
+	// ---------------------------------
 
 	public Link changeUpdatedAt(LocalDateTime updatedAt) {
 		this.updatedAt = updatedAt;
@@ -183,6 +185,6 @@ public class Link {
 		this.isValid = isValid;
 		this.publishedAt = publishedAt;
 		this.createdAt = LocalDateTime.now();
-		this.updatedAt = this.createdAt;
+		this.updatedAt = LocalDateTime.now().minusDays(100); // 최초 1회 크롤링을 위한 값.
 	}
 }
