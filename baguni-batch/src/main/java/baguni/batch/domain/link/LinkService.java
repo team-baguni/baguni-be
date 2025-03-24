@@ -10,6 +10,7 @@ import baguni.batch.domain.crawler.LinkCrawler;
 import baguni.batch.domain.validator.LinkValidator;
 import baguni.infra.infrastructure.link.dto.LinkCommand;
 import baguni.infra.infrastructure.link.LinkDataHandler;
+import baguni.infra.infrastructure.link.dto.LinkResult;
 import io.opentelemetry.instrumentation.annotations.WithSpan;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -46,24 +47,22 @@ public class LinkService {
 	@WithSpan
 	public void updateLink(String url) {
 
-		/* DB에 저장된 링크만 분석 가능 */
 		var link = linkDataHandler.getLink(url);
 
 		/* 접근 불가한 주소는 생략 */
-		if (linkValidator.isNotAccessible(url)) {
-			linkDataHandler.updateLink(new LinkCommand.UpdateIsValid(url, Boolean.FALSE));
+		if (!isAccessible(link)) {
 			return;
 		}
 
 		/* 최근 업데이트된 글은 생략
-
 		 * MEMO. 2025.03.23 (일) --- 개선 필요성
 		 *   링크 갱신 날짜는 DB 필드 1개라도 변경되면 업데이트된다.
 		 *   분석 예외 발생에 따른 부분적 업데이트시 갱신 날짜는 최신화되기 때문에
 		 *   재시도시 아래 조건에 걸리게 된다.
 		 */
-		if (link.getDaysPassed() < 90)
+		if (link.getDaysPassed() < 90) {
 			return;
+		}
 
 		/* 크롤링 시작 + DB 저장 */
 		var crawled = linkCrawler.crawl(url);
@@ -79,8 +78,9 @@ public class LinkService {
 
 		/* 게시글 타입만 분석 (Article)
 		 * 현재 구현 상 게시글 타입을 단언할 수 있는건 우리가 수집한 블로그 Feed 뿐이라... */
-		if (!link.isBlogFeed())
+		if (!link.isBlogFeed()) {
 			return;
+		}
 
 		/* 내용 분석 시작 + DB 저장 */
 		var analyzed = articleAnalyzer.analyze(crawled.content());
@@ -89,6 +89,16 @@ public class LinkService {
 		arr.addAll(analyzed.keywords());
 		linkDataHandler.updateLink(new LinkCommand.UpdateSummary(link.url(), analyzed.summary()));
 		linkDataHandler.updateLink(new LinkCommand.UpdateCategories(link.url(), arr));
+	}
+
+	public Boolean isAccessible(LinkResult link) {
+		var isLinkAccessible = linkValidator.isAccessible(link.url());
+		if (!isLinkAccessible && link.isValid()) {
+			linkDataHandler.updateLink(new LinkCommand.UpdateIsValid(link.url(), Boolean.FALSE));
+		} else if (isLinkAccessible && !link.isValid()) {
+			linkDataHandler.updateLink(new LinkCommand.UpdateIsValid(link.url(), Boolean.TRUE));
+		}
+		return isLinkAccessible;
 	}
 
 	// -------------------------------------------------------
