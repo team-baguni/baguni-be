@@ -93,9 +93,9 @@ public class LinkService {
 
 	public Boolean isAccessible(LinkResult link) {
 		var isLinkAccessible = linkValidator.isAccessible(link.url());
-		if (!isLinkAccessible && link.isValid()) {
+		if (!isLinkAccessible && link.isValid()) { /* 원래 유효했으나 유효하지 않게 된 경우 */
 			linkDataHandler.updateLink(new LinkCommand.UpdateIsValid(link.url(), Boolean.FALSE));
-		} else if (isLinkAccessible && !link.isValid()) {
+		} else if (isLinkAccessible && !link.isValid()) { /* 원래 유효하지 않았으나 유효해진 경우 */
 			linkDataHandler.updateLink(new LinkCommand.UpdateIsValid(link.url(), Boolean.TRUE));
 		}
 		return isLinkAccessible;
