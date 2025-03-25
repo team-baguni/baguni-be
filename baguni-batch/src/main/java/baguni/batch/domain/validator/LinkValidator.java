@@ -18,6 +18,10 @@ public class LinkValidator {
 
 	private final VisitWebsiteApi webApi;
 
+	public boolean isNotAccessible(String url) {
+		return !isAccessible(url);
+	}
+
 	public boolean isAccessible(String url) {
 		try {
 			webApi.checkUrl(URI.create(url));
