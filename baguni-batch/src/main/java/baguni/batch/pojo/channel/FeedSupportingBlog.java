@@ -1,5 +1,7 @@
 package baguni.batch.pojo.channel;
 
+import java.util.List;
+
 import baguni.batch.pojo.resource.WebLink;
 import lombok.Getter;
 
@@ -14,5 +16,10 @@ public class FeedSupportingBlog extends Blog {
 	) {
 		super(blogLink);
 		this.feedLink = feedLink;
+	}
+
+	@Override
+	public List<BlogArticle> getArticles() {
+		return List.of();
 	}
 }
