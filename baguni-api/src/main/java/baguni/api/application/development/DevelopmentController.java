@@ -1,10 +1,12 @@
 package baguni.api.application.development;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import org.springframework.context.annotation.Profile;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -18,6 +20,8 @@ import baguni.common.event.EventMessenger;
 import baguni.common.event.LinkReadEvent;
 import baguni.common.exception.base.ServiceException;
 import baguni.common.exception.error_code.LinkErrorCode;
+import baguni.domain.blog.Blog;
+import baguni.api.BlogApi;
 import baguni.infra.infrastructure.link.LinkRepository;
 import baguni.security.config.JwtProperties;
 import baguni.security.config.SecurityProperties;
@@ -147,5 +151,20 @@ public class DevelopmentController {
 		// ----------------------------------
 		eventMessenger.send(new LinkReadEvent(link.getUrl()));
 		return ResponseEntity.noContent().build();
+	}
+
+	// ---------------------------------------------------------
+
+	// @DomainConfig에서 설정한 대로, @DomainApiImpl 어노테이션이 붙은 구현체를 주입
+	private final BlogApi blogApi;
+
+	@Operation(summary = "도메인 테스트")
+	@ApiResponses(value = {
+		@ApiResponse(responseCode = "204", description = "성공")
+	})
+	@GetMapping("/load-blog")
+	public ResponseEntity<List<Blog>> getBlogs() {
+		var blogs = blogApi.getAll();
+		return ResponseEntity.ok(blogs);
 	}
 }
