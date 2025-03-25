@@ -11,6 +11,7 @@ repositories {
 
 dependencies {
     implementation project(":baguni-common")
+    implementation project(":baguni-domain")
     implementation project(":baguni-infra")
 
     // spring jpa

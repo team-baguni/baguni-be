@@ -1,4 +1,4 @@
-package baguni.batch.pojo.information;
+package baguni.domain.base;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
