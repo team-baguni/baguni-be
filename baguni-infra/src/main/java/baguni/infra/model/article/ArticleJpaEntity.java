@@ -1,6 +1,6 @@
 package baguni.infra.model.article;
 
-import java.util.Set;
+import java.time.LocalDateTime;
 
 import baguni.infra.model.common.BaseEntity;
 import jakarta.persistence.Column;
@@ -9,9 +9,6 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.ManyToMany;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
@@ -36,4 +33,7 @@ public class ArticleJpaEntity extends BaseEntity {
 	@OneToOne
 	@JoinColumn(name = "information_id", unique = true)
 	private ArticleInformationJpaEntity information;
+
+	@Column(name = "published_at", columnDefinition = "TIMESTAMP")
+	private LocalDateTime publishedAt;
 }
