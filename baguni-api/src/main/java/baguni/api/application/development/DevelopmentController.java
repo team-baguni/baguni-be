@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import baguni.api.application.user.controller.dto.DevelopUserApiResponse;
 import baguni.api.application.user.controller.dto.UserApiMapper;
 import baguni.api.application.user.controller.dto.UserInfoApiResponse;
 import baguni.api.service.user.service.UserService;
@@ -50,11 +51,11 @@ public class DevelopmentController {
 	@ApiResponses(value = {
 		@ApiResponse(responseCode = "204", description = "테스트 계정 생성 성공")
 	})
-	public ResponseEntity<UserInfoApiResponse> createTestUserIdPassword(
+	public ResponseEntity<DevelopUserApiResponse> createTestUserIdPassword(
 		@Valid @RequestBody NamePassword namePassword
 	) {
 		var userInfo = userService.createTestUser(namePassword);
-		var response = userApiMapper.toApiResponse(userInfo);
+		var response = userApiMapper.toDevelopUserApiResponse(userInfo);
 		return ResponseEntity.ok(response);
 	}
 
