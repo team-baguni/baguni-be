@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import baguni.api.application.user.controller.dto.DevelopUserApiResponse;
@@ -83,7 +84,7 @@ public class DevelopmentController {
 		@ApiResponse(responseCode = "204", description = "회원 탈퇴 성공")
 	})
 	public ResponseEntity<Void> deleteUser(
-		@Valid @RequestBody Long userId,
+		@Valid @RequestParam Long userId,
 		HttpServletResponse response
 	) {
 		userService.deleteUser(userId);
