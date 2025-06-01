@@ -46,7 +46,8 @@ public class DevelopmentController {
 	private final SecurityProperties securityProps;
 	private final JwtProperties jwtProps;
 
-	@PostMapping("/users/new/signup")
+	// 필요 시, 주석 해제
+	// @PostMapping("/users/new/signup")
 	@Operation(summary = "테스트 회원 가입 (name + password)", description = "테스트용 회원을 생성합니다.")
 	@ApiResponses(value = {
 		@ApiResponse(responseCode = "204", description = "테스트 계정 생성 성공")
@@ -77,7 +78,8 @@ public class DevelopmentController {
 		);
 	}
 
-	@DeleteMapping("/users")
+	// 필요 시, 주석 해제
+	// @DeleteMapping("/users")
 	@Operation(summary = "회원 탈퇴", description = "회원 탈퇴를 하면 모든 폴더, 픽, 태그가 삭제됩니다.")
 	@ApiResponses(value = {
 		@ApiResponse(responseCode = "204", description = "회원 탈퇴 성공")
