@@ -54,7 +54,7 @@ public class SecurityConfig {
 	 *       PRODUCTION SECURITY SETTING
 	 * ********************************************/
 	@Bean
-	@Profile({"prod"})
+	@Profile({"prodXXX"}) // 임시 제거
 	public SecurityFilterChain ProductionConfig(HttpSecurity http) throws Exception {
 		log.info("운영 환경 SECURITY 설정을 적용 합니다. [#SecurityConfig.ProductionConfig]");
 		http
@@ -113,7 +113,7 @@ public class SecurityConfig {
 	 * (2)  Swagger 경로는 모두 허용
 	 */
 	@Bean
-	@Profile({"local", "dev", "staging"})
+	@Profile({"local", "dev", "staging", "prod"})
 	public SecurityFilterChain DevelopmentConfig(HttpSecurity http) throws Exception {
 		log.info("로컬/개발/스테이징 환경 SECURITY 설정을 적용 합니다 [#SecurityConfig.DevelopmentConfig]");
 		http
