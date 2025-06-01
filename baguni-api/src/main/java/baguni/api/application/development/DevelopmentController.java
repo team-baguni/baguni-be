@@ -28,7 +28,7 @@ import lombok.RequiredArgsConstructor;
 @Profile({"local", "dev", "staging"})
 @RequestMapping("/api/development")
 @Tag(
-	name = "개발/테스트 전용 API",
+	name = "개발/테스트 전용 API",   
 	description = """
 		1. 인증 없이 사용 가능합니다.
 		2. 운영 환경에선 해당 API가 비활성화됩니다.
