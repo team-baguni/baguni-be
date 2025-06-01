@@ -6,6 +6,7 @@ import java.util.Optional;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import baguni.common.dto.NamePassword;
 import baguni.common.exception.base.ServiceException;
 import baguni.common.exception.error_code.UserErrorCode;
 import baguni.infra.infrastructure.folder.FolderRepository;
@@ -62,11 +63,19 @@ public class UserDataHandler {
 	}
 
 	@Transactional
-	public User createTestUser() {
-		var userName = "test" + userRepository.countByRole(Role.ROLE_TEST);
+	public User createTestUser(NamePassword namePassword) {
+		if (userRepository.existsByNickname(namePassword.name())) {
+			throw new ServiceException(UserErrorCode.USER_NICKNAME_DUPLICATE);
+		}
 		return userRepository.save(
-			User.TestUser(userName, userName + "@baguni.com")
+			User.TestUser(namePassword.name(), namePassword.password(), namePassword.name() + "@baguni.com")
 		);
+	}
+
+	@Transactional(readOnly = true)
+	public User getTestUser(NamePassword namePassword) {
+		return userRepository.findByNicknameAndPassword(namePassword.name(), namePassword.password())
+							 .orElseThrow(() -> new ServiceException(UserErrorCode.USER_NOT_FOUND));
 	}
 
 	/**

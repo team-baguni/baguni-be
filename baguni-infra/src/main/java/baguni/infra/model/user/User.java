@@ -127,10 +127,12 @@ public class User extends BaseEntity {
 			.build();
 	}
 
-	public static User TestUser(String name, String email) {
+	// 테스트 계정
+	public static User TestUser(String name, String password, String email) {
 		return User
 			.builder()
 			.nickname(name)
+			.password(password)
 			.email(email)
 			.idToken(IDToken.makeNew())
 			.role(Role.ROLE_TEST)

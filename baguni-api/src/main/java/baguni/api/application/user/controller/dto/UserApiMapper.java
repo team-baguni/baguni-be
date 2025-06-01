@@ -16,4 +16,7 @@ public interface UserApiMapper {
 
 	@Mapping(expression = "java(userInfo.idToken().value())", target = "idToken")
 	UserInfoApiResponse toApiResponse(UserInfo userInfo);
+
+	@Mapping(expression = "java(userInfo.idToken().value())", target = "idToken")
+	DevelopUserApiResponse toDevelopUserApiResponse(UserInfo userInfo);
 }
