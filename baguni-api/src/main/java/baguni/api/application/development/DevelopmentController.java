@@ -25,7 +25,7 @@ import lombok.RequiredArgsConstructor;
  */
 @RestController
 @RequiredArgsConstructor
-@Profile({"local", "dev", "staging"})
+@Profile({"local", "dev", "staging", "prod"})
 @RequestMapping("/api/development")
 @Tag(
 	name = "개발/테스트 전용 API",   
